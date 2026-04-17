@@ -1,0 +1,22 @@
+<?php
+/**
+ * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @license https://opensource.org/licenses/GPL-2.0
+ * @link https://www.koogua.com
+ */
+
+namespace App\Services\Logic;
+
+use App\Validators\Danmu as DanmuValidator;
+
+trait DanmuTrait
+{
+
+    public function checkDanmu($id)
+    {
+        $validator = new DanmuValidator();
+
+        return $validator->checkDanmu($id);
+    }
+
+}

@@ -1,0 +1,123 @@
+<?php
+/**
+ * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @license https://opensource.org/licenses/GPL-2.0
+ * @link https://www.koogua.com
+ */
+
+namespace App\Console\Tasks;
+
+use App\Http\Admin\Services\Setting as SettingService;
+use App\Library\Utils\Password as PasswordUtil;
+use App\Repos\Chapter as ChapterRepo;
+use App\Services\ChapterVod as ChapterVodService;
+use App\Services\Utils\IndexPageCache as IndexPageCacheUtil;
+use App\Validators\Account as AccountValidator;
+
+class MaintainTask extends Task
+{
+
+    /**
+     * 重建首页课程缓存
+     *
+     * @param array $params
+     * @command: php console.php maintain rebuild_index_page_cache
+     */
+    public function rebuildIndexPageCacheAction($params)
+    {
+        $section = $params[0] ?? null;
+
+        $util = new IndexPageCacheUtil();
+
+        $util->rebuild($section);
+
+        echo '------ rebuild index page cache success ------' . PHP_EOL;
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param array $params
+     * @command: php console.php maintain reset_password 13507083515 123456
+     */
+    public function resetPasswordAction($params)
+    {
+        if (empty($params[0])) {
+            exit('account is required' . PHP_EOL);
+        }
+
+        if (empty($params[1])) {
+            exit('password is required' . PHP_EOL);
+        }
+
+        $validator = new AccountValidator();
+
+        $account = $validator->checkAccount($params[0]);
+
+        $salt = PasswordUtil::salt();
+        $hash = PasswordUtil::hash($params[1], $salt);
+
+        $account->salt = $salt;
+        $account->password = $hash;
+
+        $account->update();
+
+        echo '------ reset password success ------' . PHP_EOL;
+    }
+
+    /**
+     * 关闭站点
+     *
+     * @command: php console.php maintain disable_site
+     */
+    public function disableSiteAction()
+    {
+        $service = new SettingService();
+
+        $service->updateSettings('site', ['status' => 'closed']);
+
+        echo '------ disable site success ------' . PHP_EOL;
+    }
+
+    /**
+     * 开启站点
+     *
+     * @command: php console.php maintain enable_site
+     */
+    public function enableSiteAction()
+    {
+        $service = new SettingService();
+
+        $service->updateSettings('site', ['status' => 'normal']);
+
+        echo '------ enable site success ------' . PHP_EOL;
+    }
+
+    /**
+     * 重置点播信息缓存
+     *
+     * @param array $params
+     * @command: php console.php maintain reset_vod_file_cache 1409
+     */
+    public function resetVodFileCacheAction($params)
+    {
+        if (empty($params[0])) {
+            exit('chapter is required' . PHP_EOL);
+        }
+
+        $chapterRepo = new ChapterRepo();
+
+        $chapterVod = $chapterRepo->findChapterVod($params[0]);
+
+        if (!$chapterVod) {
+            exit('chapter not found' . PHP_EOL);
+        }
+
+        $service = new ChapterVodService();
+
+        $service->pullMediaInfo($chapterVod);
+
+        echo '------ reset vod file cache success ------' . PHP_EOL;
+    }
+
+}

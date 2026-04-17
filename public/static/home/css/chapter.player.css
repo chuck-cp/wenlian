@@ -1,0 +1,8 @@
+/**
+ * 课程播放器（DPlayer）：隐藏进度条，避免拖拽快进（配合 JS 限制）
+ * 仅作用于 .player-wrap 内的播放器
+ */
+.player-wrap .dplayer-bar-wrap,
+.player-wrap .dplayer-bar {
+    display: none !important;
+}

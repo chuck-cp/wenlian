@@ -1,0 +1,189 @@
+<?php
+/**
+ * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @license https://opensource.org/licenses/GPL-2.0
+ * @link https://www.koogua.com
+ */
+
+namespace App\Validators;
+
+use App\Exceptions\BadRequest as BadRequestException;
+use App\Library\Validators\Common as CommonValidator;
+use App\Models\FlashSale as FlashSaleModel;
+use App\Repos\FlashSale as FlashSaleRepo;
+use App\Services\Logic\FlashSale\UserOrderCache;
+
+class FlashSale extends Validator
+{
+
+    public function checkFlashSale($id)
+    {
+        $saleRepo = new FlashSaleRepo();
+
+        $sale = $saleRepo->findById($id);
+
+        if (!$sale) {
+            throw new BadRequestException('flash_sale.not_found');
+        }
+
+        return $sale;
+    }
+
+    public function checkItemType($type)
+    {
+        $list = FlashSaleModel::itemTypes();
+
+        if (!array_key_exists($type, $list)) {
+            throw new BadRequestException('flash_sale.invalid_item_type');
+        }
+
+        return $type;
+    }
+
+    public function checkStartTime($startTime)
+    {
+        if (!CommonValidator::date($startTime, 'Y-m-d H:i:s')) {
+            throw new BadRequestException('flash_sale.invalid_start_time');
+        }
+
+        return strtotime($startTime);
+    }
+
+    public function checkEndTime($endTime)
+    {
+        if (!CommonValidator::date($endTime, 'Y-m-d H:i:s')) {
+            throw new BadRequestException('flash_sale.invalid_end_time');
+        }
+
+        return strtotime($endTime);
+    }
+
+    public function checkTimeRange($startTime, $endTime)
+    {
+        if ($startTime >= $endTime) {
+            throw new BadRequestException('flash_sale.invalid_time_range');
+        }
+    }
+
+    public function checkSchedules($schedules)
+    {
+        if (empty($schedules)) {
+            throw new BadRequestException('flash_sale.invalid_schedules');
+        }
+
+        $result = explode(',', $schedules);
+
+        sort($result);
+
+        return $result;
+    }
+
+    public function checkStock($stock)
+    {
+        $value = $this->filter->sanitize($stock, ['trim', 'int']);
+
+        if ($value < 0 || $value > 999999) {
+            throw new BadRequestException('flash_sale.invalid_stock');
+        }
+
+        return $value;
+    }
+
+    public function checkPrice($price)
+    {
+        if ($price < 1 || $price > 999999) {
+            throw new BadRequestException('flash_sale.invalid_price');
+        }
+
+        return $price;
+    }
+
+    public function checkPublishStatus($status)
+    {
+        if (!in_array($status, [0, 1])) {
+            throw new BadRequestException('flash_sale.invalid_publish_status');
+        }
+
+        return $status;
+    }
+
+    public function checkCourse($id)
+    {
+        $validator = new Course();
+
+        return $validator->checkCourse($id);
+    }
+
+    public function checkPackage($id)
+    {
+        $validator = new Package();
+
+        return $validator->checkPackage($id);
+    }
+
+    public function checkVip($id)
+    {
+        $validator = new Vip();
+
+        return $validator->checkVip($id);
+    }
+
+    public function checkExamPaper($id)
+    {
+        $validator = new ExamPaper();
+
+        return $validator->checkExamPaper($id);
+    }
+
+    public function checkArticle($id)
+    {
+        $validator = new Article();
+
+        return $validator->checkArticle($id);
+    }
+
+    public function checkIfActiveItemExisted($itemId, $itemType)
+    {
+        $saleRepo = new FlashSaleRepo();
+
+        $sale = $saleRepo->findItemFlashSale($itemId, $itemType);
+
+        if ($sale && $sale->end_time > time()) {
+            throw new BadRequestException('flash_sale.active_item_existed');
+        }
+    }
+
+    public function checkIfExpired($endTime)
+    {
+        if ($endTime < time()) {
+            throw new BadRequestException('flash_sale.expired');
+        }
+    }
+
+    public function checkIfOutSchedules($schedules)
+    {
+        $curHour = date('H');
+
+        $flag = true;
+
+        foreach ($schedules as $schedule) {
+            if ($curHour >= $schedule && $curHour < $schedule + 2) {
+                $flag = false;
+            }
+        }
+
+        if ($flag) {
+            throw new BadRequestException('flash_sale.out_schedules');
+        }
+    }
+
+    public function checkIfNotPaid($userId, $saleId)
+    {
+        $cache = new UserOrderCache();
+
+        if ($cache->get($userId, $saleId)) {
+            throw new BadRequestException('flash_sale.not_paid');
+        }
+    }
+
+}
