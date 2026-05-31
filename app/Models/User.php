@@ -27,6 +27,17 @@ class User extends Model
      */
     const EDU_ROLE_STUDENT = 1; // 学员
     const EDU_ROLE_TEACHER = 2; // 讲师
+    const EDU_ROLE_CUSTOM = 3; // 自定义
+
+    /**
+     * 自定义教学角色默认展示名
+     */
+    const EDU_ROLE_LABEL_DEFAULT = '其他';
+
+    /**
+     * 自定义教学角色名称最大字数
+     */
+    const EDU_ROLE_LABEL_MAX_LEN = 4;
 
     /**
      * 主键编号
@@ -111,6 +122,13 @@ class User extends Model
      * @var int
      */
     public $edu_role = self::EDU_ROLE_STUDENT;
+
+    /**
+     * 自定义教学角色名称（edu_role=3 时使用）
+     *
+     * @var string
+     */
+    public $edu_role_label = '';
 
     /**
      * 后台角色
@@ -283,7 +301,38 @@ class User extends Model
         return [
             self::EDU_ROLE_STUDENT => '学员',
             self::EDU_ROLE_TEACHER => '讲师',
+            self::EDU_ROLE_CUSTOM => '自定义',
         ];
+    }
+
+    /**
+     * 格式化教学角色展示名称
+     *
+     * @param int $eduRole
+     * @param string $eduRoleLabel
+     * @return string
+     */
+    public static function formatEduRoleName($eduRole, $eduRoleLabel = '')
+    {
+        if ($eduRole == self::EDU_ROLE_CUSTOM) {
+            $label = trim($eduRoleLabel);
+
+            return $label !== '' ? $label : self::EDU_ROLE_LABEL_DEFAULT;
+        }
+
+        $types = self::eduRoleTypes();
+
+        return $types[$eduRole] ?? 'N/A';
+    }
+
+    /**
+     * 获取当前用户的教学角色展示名称
+     *
+     * @return string
+     */
+    public function getEduRoleName()
+    {
+        return self::formatEduRoleName($this->edu_role, $this->edu_role_label);
     }
 
 }

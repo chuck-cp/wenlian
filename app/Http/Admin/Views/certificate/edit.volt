@@ -25,6 +25,13 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">授予方式</label>
+            <div class="layui-input-block">
+                <input type="radio" name="grant_type" value="1" title="自动授予" {% if cert.grant_type == 1 %}checked="checked"{% endif %}>
+                <input type="radio" name="grant_type" value="2" title="人工授予" {% if cert.grant_type == 2 %}checked="checked"{% endif %}>
+            </div>
+        </div>
         <div id="block-1" class="block" style="{{ block1_style }}">
             <div class="layui-form-item">
                 <label class="layui-form-label">课程选择</label>

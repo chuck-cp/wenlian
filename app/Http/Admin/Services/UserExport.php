@@ -10,6 +10,7 @@ namespace App\Http\Admin\Services;
 use App\Builders\UserList as UserListBuilder;
 use App\Http\Admin\Services\Traits\AccountSearchTrait;
 use App\Library\Paginator\Query as PagerQuery;
+use App\Models\User as UserModel;
 use App\Repos\User as UserRepo;
 use Vtiful\Kernel\Excel;
 
@@ -112,7 +113,7 @@ class UserExport extends Service
             1 => $item['name'],
             2 => $item['account']['phone'] ?: 'N/A',
             3 => $item['account']['email'] ?: 'N/A',
-            4 => $item['edu_role'] == 1 ? '学员' : '讲师',
+            4 => UserModel::formatEduRoleName($item['edu_role'], $item['edu_role_label'] ?? ''),
             5 => $item['vip'] == 1 ? '是' : '否',
             6 => $item['create_time'] > 0 ? date('Y-m-d', $item['create_time']) : 'N/A',
             7 => $item['active_time'] > 0 ? date('Y-m-d', $item['active_time']) : 'N/A',

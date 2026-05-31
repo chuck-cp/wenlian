@@ -49,10 +49,12 @@ class UserList extends Builder
 
     public function handleEduRoles(array $users)
     {
-        $roles = $this->getEduRoles();
-
         foreach ($users as $key => $user) {
-            $users[$key]['edu_role'] = $roles[$user['edu_role']] ?? ['id' => 0, 'name' => 'N/A'];
+            $eduRole = $user['edu_role'] ?? 0;
+            $users[$key]['edu_role'] = [
+                'id' => $eduRole,
+                'name' => UserModel::formatEduRoleName($eduRole, $user['edu_role_label'] ?? ''),
+            ];
         }
 
         return $users;
@@ -93,20 +95,6 @@ class UserList extends Builder
         }
 
         return $result;
-    }
-
-    protected function getEduRoles()
-    {
-        return [
-            UserModel::EDU_ROLE_STUDENT => [
-                'id' => UserModel::EDU_ROLE_STUDENT,
-                'name' => '学员',
-            ],
-            UserModel::EDU_ROLE_TEACHER => [
-                'id' => UserModel::EDU_ROLE_TEACHER,
-                'name' => '讲师',
-            ],
-        ];
     }
 
 }

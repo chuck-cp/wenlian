@@ -32,6 +32,16 @@
         <div class="layui-input-block">
             <input type="radio" name="edu_role" value="1" title="学员" lay-filter="edu_role" {% if user.edu_role == 1 %}checked="checked"{% endif %}>
             <input type="radio" name="edu_role" value="2" title="讲师" lay-filter="edu_role" {% if user.edu_role == 2 %}checked="checked"{% endif %}>
+            <input type="radio" name="edu_role" value="3" title="自定义" lay-filter="edu_role" {% if user.edu_role == 3 %}checked="checked"{% endif %}>
+        </div>
+    </div>
+    <div id="edu-role-label-block" style="{{ edu_role_label_display }}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="edu_role_label" maxlength="4" placeholder="最多4个字，留空显示「其他」" value="{{ user.edu_role_label }}">
+                <div class="layui-form-mid layui-word-aux">仅保存到当前用户（{{ user.name }}），不同用户可设置不同名称</div>
+            </div>
         </div>
     </div>
     <div id="profile-block" style="{{ profile_display }}">

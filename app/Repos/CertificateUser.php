@@ -80,7 +80,7 @@ class CertificateUser extends Repository
     public function findBySn($sn)
     {
         return CertificateUserModel::findFirst([
-            'conditions' => 'sn = :sn:',
+            'conditions' => 'sn = :sn: AND deleted = 0',
             'bind' => ['sn' => $sn],
         ]);
     }

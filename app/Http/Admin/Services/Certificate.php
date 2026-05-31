@@ -120,12 +120,14 @@ class Certificate extends Service
     public function createCertificate()
     {
         $post = $this->request->getPost();
+        $grantType = $this->request->getPost('grant_type', 'int', CertificateModel::GRANT_TYPE_MANUAL);
 
         $validator = new CertificateValidator();
 
         $cert = new CertificateModel();
 
         $cert->name = $validator->checkName($post['name']);
+        $cert->grant_type = $validator->checkGrantType($grantType);
         $cert->item_type = $validator->checkItemType($post['item_type']);
 
         $cert->create();
@@ -168,6 +170,10 @@ class Certificate extends Service
                 $data['item_id'] = $topic->id;
                 $data['item_info'] = $sync->getOriginTopicInfo($topic);
             }
+        }
+
+        if (isset($post['grant_type'])) {
+            $data['grant_type'] = $validator->checkGrantType($post['grant_type']);
         }
 
         if (isset($post['published'])) {

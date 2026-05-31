@@ -3,6 +3,7 @@
 {% block content %}
 
     {% set profile_display = user.edu_role == 2 ? 'display:block': 'display:none' %}
+    {% set edu_role_label_display = user.edu_role == 3 ? 'display:block': 'display:none' %}
     {% set lock_expiry_display = user.locked == 1 ? 'display:block': 'display:none' %}
     {% set vip_expiry_display = user.vip == 1 ? 'display:block': 'display:none' %}
     {% set update_user_url = url({'for':'admin.user.update','id':user.id}) %}
@@ -67,11 +68,17 @@
             });
 
             form.on('radio(edu_role)', function (data) {
-                var block = $('#profile-block');
+                var profileBlock = $('#profile-block');
+                var labelBlock = $('#edu-role-label-block');
                 if (data.value === '2') {
-                    block.show();
+                    profileBlock.show();
                 } else {
-                    block.hide();
+                    profileBlock.hide();
+                }
+                if (data.value === '3') {
+                    labelBlock.show();
+                } else {
+                    labelBlock.hide();
                 }
             });
 

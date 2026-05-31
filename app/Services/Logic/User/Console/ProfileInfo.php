@@ -35,6 +35,8 @@ class ProfileInfo extends LogicService
             'vip' => $user->vip,
             'locked' => $user->locked,
             'edu_role' => $user->edu_role,
+            'edu_role_label' => $user->edu_role_label,
+            'edu_role_name' => UserModel::formatEduRoleName($user->edu_role, $user->edu_role_label),
             'admin_role' => $user->admin_role,
             'vip_expiry_time' => $user->vip_expiry_time,
             'lock_expiry_time' => $user->lock_expiry_time,

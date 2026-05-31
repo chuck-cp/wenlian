@@ -55,6 +55,19 @@ class Certificate extends Validator
         return $type;
     }
 
+    public function checkGrantType($type)
+    {
+        $type = (int)$type;
+
+        $list = CertificateModel::grantTypes();
+
+        if (!array_key_exists($type, $list)) {
+            throw new BadRequestException('certificate.invalid_grant_type');
+        }
+
+        return $type;
+    }
+
     public function checkPublishStatus($status)
     {
         if (!in_array($status, [0, 1])) {

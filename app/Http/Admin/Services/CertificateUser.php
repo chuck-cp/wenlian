@@ -13,11 +13,12 @@ use App\Http\Admin\Services\Traits\AccountSearchTrait;
 use App\Library\Paginator\Query as PagerQuery;
 use App\Models\Certificate as CertificateModel;
 use App\Models\CertificateUser as CertificateUserModel;
-use App\Models\KgSale as KgSaleModel;
 use App\Repos\Certificate as CertificateRepo;
 use App\Repos\CertificateUser as CertificateUserRepo;
+use App\Services\Logic\Certificate\Poster as CertPosterService;
 use App\Validators\Certificate as CertificateValidator;
 use App\Validators\CertificateUser as CertificateUserValidator;
+use Throwable;
 
 class CertificateUser extends Service
 {
@@ -45,22 +46,16 @@ class CertificateUser extends Service
     {
         $validator = new CertificateValidator();
 
-        $validator->checkCertificate($id);
+        $cert = $validator->checkCertificate($id);
+
+        if ($cert->grant_type != CertificateModel::GRANT_TYPE_MANUAL) {
+            throw new BadRequestException('certificate.manual_grant_not_allowed');
+        }
 
         $post = $this->request->getPost();
 
         $certUserValidator = new CertificateUserValidator();
         $user = $certUserValidator->checkUser($post['user_id']);
-
-        $itemType = $validator->checkItemType($post['item_type']);
-        $itemId = $this->handleGrantItemId($itemType, $post, $validator);
-
-        $certRepo = new CertificateRepo();
-        $cert = $certRepo->findItemCertificate($itemId, $itemType);
-
-        if (!$cert || $cert->deleted == 1) {
-            throw new BadRequestException('certificate.item_not_bound');
-        }
 
         $certUserRepo = new CertificateUserRepo();
         $activeCertUser = $certUserRepo->findCertUser($cert->id, $user->id);
@@ -81,12 +76,15 @@ class CertificateUser extends Service
         if ($deletedCertUser) {
             $deletedCertUser->deleted = 0;
             $deletedCertUser->update();
+            $certUser = $deletedCertUser;
         } else {
             $certUser = new CertificateUserModel();
             $certUser->cert_id = $cert->id;
             $certUser->user_id = $user->id;
             $certUser->create();
         }
+
+        $this->generateCertImage($certUser);
 
         $this->recountGrants($cert);
     }
@@ -133,6 +131,21 @@ class CertificateUser extends Service
         return $validator->checkCertificate($id);
     }
 
+    protected function generateCertImage(CertificateUserModel $certUser)
+    {
+        $service = new CertPosterService();
+
+        try {
+            $service->handle($certUser->sn);
+        } catch (Throwable $e) {
+            $this->getDI()->get('logger')->error(sprintf(
+                'Generate Certificate Image Failed, sn: %s, message: %s',
+                $certUser->sn,
+                $e->getMessage()
+            ));
+        }
+    }
+
     protected function handleUsers($pager)
     {
         if ($pager->total_items > 0) {
@@ -147,26 +160,6 @@ class CertificateUser extends Service
         }
 
         return $pager;
-    }
-
-    protected function handleGrantItemId($itemType, array $post, CertificateValidator $validator)
-    {
-        if ($itemType == KgSaleModel::ITEM_COURSE) {
-            $course = $validator->checkCourse($post['xm_course_id']);
-            return $course->id;
-        }
-
-        if ($itemType == KgSaleModel::ITEM_EXAM_PAPER) {
-            $paper = $validator->checkExamPaper($post['xm_paper_id']);
-            return $paper->id;
-        }
-
-        if ($itemType == KgSaleModel::ITEM_TOPIC) {
-            $topic = $validator->checkTopic($post['xm_topic_id']);
-            return $topic->id;
-        }
-
-        throw new BadRequestException('certificate.invalid_item_type');
     }
 
 }

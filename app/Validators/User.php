@@ -180,6 +180,33 @@ class User extends Validator
         return $value;
     }
 
+    /**
+     * 校验自定义教学角色名称
+     *
+     * @param string $label
+     * @param int $eduRole
+     * @return string
+     * @throws BadRequestException
+     */
+    public function checkEduRoleLabel($label, $eduRole)
+    {
+        $value = $this->filter->sanitize($label, ['trim', 'string']);
+
+        if ($eduRole != UserModel::EDU_ROLE_CUSTOM) {
+            return '';
+        }
+
+        if ($value === '') {
+            return '';
+        }
+
+        if (kg_strlen($value) > UserModel::EDU_ROLE_LABEL_MAX_LEN) {
+            throw new BadRequestException('user.invalid_edu_role_label');
+        }
+
+        return $value;
+    }
+
     public function checkAdminRole($value)
     {
         if (!$value) return 0;

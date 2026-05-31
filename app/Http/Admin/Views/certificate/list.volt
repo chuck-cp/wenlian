@@ -59,8 +59,8 @@
                         <button class="layui-btn layui-btn-sm">操作 <i class="layui-icon layui-icon-triangle-d"></i></button>
                         <ul>
                             <li><a href="{{ edit_url }}">编辑证书</a></li>
-                            {% if item.deleted == 0 %}
-                                <li><a href="{{ grant_url }}">发放证书</a></li>
+                            {% if item.deleted == 0 and item.grant_type == 2 %}
+                                <li><a href="{{ grant_url }}">手动发放</a></li>
                             {% endif %}
                             {% if item.deleted == 0 %}
                                 <li><a href="javascript:" class="kg-delete" data-url="{{ delete_url }}">删除证书</a></li>

@@ -9,6 +9,8 @@ namespace App\Http\Admin\Controllers;
 
 use App\Http\Admin\Services\Certificate as CertificateService;
 use App\Http\Admin\Services\CertificateUser as CertificateUserService;
+use App\Exceptions\BadRequest as BadRequestException;
+use App\Models\Certificate as CertificateModel;
 
 /**
  * @RoutePrefix("/admin/cert")
@@ -50,8 +52,10 @@ class CertificateController extends Controller
         $service = new CertificateService();
 
         $itemTypes = $service->getItemTypes();
+        $grantTypes = $service->getGrantTypes();
 
         $this->view->setVar('item_types', $itemTypes);
+        $this->view->setVar('grant_types', $grantTypes);
     }
 
     /**
@@ -66,12 +70,14 @@ class CertificateController extends Controller
         $xmExamPapers = $service->getXmExamPapers($cert);
         $xmTopics = $service->getXmTopics($cert);
         $itemTypes = $service->getItemTypes();
+        $grantTypes = $service->getGrantTypes();
 
         $this->view->setVar('cert', $cert);
         $this->view->setVar('xm_courses', $xmCourses);
         $this->view->setVar('xm_exam_papers', $xmExamPapers);
         $this->view->setVar('xm_topics', $xmTopics);
         $this->view->setVar('item_types', $itemTypes);
+        $this->view->setVar('grant_types', $grantTypes);
     }
 
     /**
@@ -188,6 +194,10 @@ class CertificateController extends Controller
         $certService = new CertificateService();
         $cert = $certService->getCertificate($id);
 
+        if ($cert->grant_type != CertificateModel::GRANT_TYPE_MANUAL) {
+            throw new BadRequestException('certificate.manual_grant_not_allowed');
+        }
+
         $service = new CertificateUserService();
 
         if ($this->request->isPost()) {
@@ -208,17 +218,8 @@ class CertificateController extends Controller
 
         } else {
 
-            $xmCourses = $certService->getXmCourses($cert);
-            $xmExamPapers = $certService->getXmExamPapers($cert);
-            $xmTopics = $certService->getXmTopics($cert);
-            $itemTypes = $certService->getItemTypes();
-
             $this->view->pick('certificate/grant');
             $this->view->setVar('cert', $cert);
-            $this->view->setVar('xm_courses', $xmCourses);
-            $this->view->setVar('xm_exam_papers', $xmExamPapers);
-            $this->view->setVar('xm_topics', $xmTopics);
-            $this->view->setVar('item_types', $itemTypes);
         }
     }
 

@@ -22,6 +22,13 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <label class="layui-form-label">授予方式</label>
+            <div class="layui-input-block">
+                <input type="radio" name="grant_type" value="1" title="自动授予">
+                <input type="radio" name="grant_type" value="2" title="人工授予" checked="checked">
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label"></label>
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit="true" lay-filter="go">提交</button>

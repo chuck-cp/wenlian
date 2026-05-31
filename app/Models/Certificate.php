@@ -168,6 +168,10 @@ class Certificate extends Model
 
     public function beforeCreate()
     {
+        if (empty($this->grant_type)) {
+            $this->grant_type = self::GRANT_TYPE_MANUAL;
+        }
+
         if (empty($this->item_info)) {
             if ($this->item_type == KgSaleModel::ITEM_COURSE) {
                 $this->item_info = $this->_course_info;

@@ -231,7 +231,8 @@ class GrantCertificateTask extends Task
     protected function findAllCerts()
     {
         return CertificateModel::query()
-            ->where('published = 1')
+            ->where('grant_type = :grant_type:', ['grant_type' => CertificateModel::GRANT_TYPE_AUTO])
+            ->andWhere('published = 1')
             ->andWhere('deleted = 0')
             ->execute();
     }
