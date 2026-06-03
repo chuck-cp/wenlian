@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -80,24 +80,17 @@ class Online extends LogicService
         return $online;
     }
 
-    protected function handleVisitPoint(UserModel $user)
+    protected function handleVisitPoint(UserModel $user): void
     {
         $todayDate = date('Ymd');
 
-        $keyName = sprintf('site_visit:%s:%s', $user->id, $todayDate);
+        $keyName = sprintf('site-visit-%s-%s', $user->id, $todayDate);
 
-        $cache = $this->getCache();
+        $redis = $this->getRedis();
 
-        if ($cache->exists($keyName)) return;
-
-        /**
-         * 先写入缓存，再处理访问积分，防止重复插入记录
-         */
-        $tomorrow = strtotime($todayDate) + 86400;
-
-        $lifetime = $tomorrow - time();
-
-        $cache->save($keyName, 1, $lifetime);
+        if (!$redis->set($keyName, 1, ['NX', 'EX' => 86400])) {
+            return;
+        }
 
         $service = new SiteVisitPointHistory();
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -21,7 +21,7 @@ class CloseTradeTask extends Task
     {
         $taskLockKey = $this->getTaskLockKey();
 
-        $taskLockId = LockUtil::addLock($taskLockKey);
+        $taskLockId = LockUtil::addLock($taskLockKey, 300);
 
         if (!$taskLockId) return;
 
@@ -34,10 +34,20 @@ class CloseTradeTask extends Task
         echo '------ start close trade ------' . PHP_EOL;
 
         foreach ($trades as $trade) {
-            if ($trade->channel == TradeModel::CHANNEL_ALIPAY) {
-                $this->handleAlipayTrade($trade);
-            } elseif ($trade->channel == TradeModel::CHANNEL_WXPAY) {
-                $this->handleWxpayTrade($trade);
+            try {
+                if ($trade->channel == TradeModel::CHANNEL_ALIPAY) {
+                    $this->handleAlipayTrade($trade);
+                } elseif ($trade->channel == TradeModel::CHANNEL_WXPAY) {
+                    $this->handleWxpayTrade($trade);
+                }
+            } catch (\Exception $e) {
+                $logger = $this->getLogger('trade');
+                $logger->error('Close Trade Task Exception: ' . kg_json_encode([
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'message' => $e->getMessage(),
+                        'trade' => $trade,
+                    ]));
             }
         }
 
@@ -53,30 +63,25 @@ class CloseTradeTask extends Task
      */
     protected function handleAlipayTrade(TradeModel $trade)
     {
-        $allowClosed = true;
-
         $alipay = new AlipayService();
 
         $alipayTrade = $alipay->find($trade->sn);
 
-        if ($alipayTrade) {
+        if (!$alipayTrade) return;
 
-            /**
-             * 异步通知接收异常，补救漏网
-             */
-            if ($alipayTrade->trade_status == 'TRADE_SUCCESS') {
-
-                $this->eventsManager->fire('Trade:afterPay', $this, $trade);
-
-                $allowClosed = false;
-
-            } elseif ($alipayTrade->trade_status == 'WAIT_BUYER_PAY') {
-
-                $allowClosed = $alipay->close($trade->sn);
-            }
+        /**
+         * 异步通知接收异常，补救漏网
+         */
+        if ($alipayTrade['trade_status'] == 'TRADE_SUCCESS') {
+            $this->eventsManager->fire('Trade:afterPay', $this, $trade);
+            return;
         }
 
-        if (!$allowClosed) return;
+        if ($alipayTrade['trade_status'] != 'WAIT_BUYER_PAY') {
+            return;
+        }
+
+        if (!$alipay->close($trade->sn)) return;
 
         $trade->status = TradeModel::STATUS_CLOSED;
 
@@ -90,30 +95,25 @@ class CloseTradeTask extends Task
      */
     protected function handleWxpayTrade(TradeModel $trade)
     {
-        $allowClosed = true;
-
         $wxpay = new WxpayService();
 
         $wxpayTrade = $wxpay->find($trade->sn);
 
-        if ($wxpayTrade) {
+        if (!$wxpayTrade) return;
 
-            /**
-             * 异步通知接收异常，补救漏网
-             */
-            if ($wxpayTrade->trade_state == 'SUCCESS') {
-
-                $this->eventsManager->fire('Trade:afterPay', $this, $trade);
-
-                $allowClosed = false;
-
-            } elseif ($wxpayTrade->trade_state == 'NOTPAY') {
-
-                $allowClosed = $wxpay->close($trade->sn);
-            }
+        /**
+         * 异步通知接收异常，补救漏网
+         */
+        if ($wxpayTrade['trade_state'] == 'SUCCESS') {
+            $this->eventsManager->fire('Trade:afterPay', $this, $trade);
+            return;
         }
 
-        if (!$allowClosed) return;
+        if ($wxpayTrade['trade_state'] != 'NOTPAY') {
+            return;
+        }
+
+        if (!$wxpay->close($trade->sn)) return;
 
         $trade->status = TradeModel::STATUS_CLOSED;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2023 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2023 深圳市酷瓜软件有限公司
  * @license https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link https://www.koogua.com
  */
@@ -8,7 +8,7 @@
 namespace App\Services\Logic\Certificate;
 
 use App\Models\CertificateUser as CertUserModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Repos\Certificate as CertRepo;
 use App\Repos\CertificateUser as CertUserRepo;
 use App\Repos\User as UserRepo;
@@ -26,6 +26,7 @@ class Poster extends Service
         $certUserRepo = new CertUserRepo();
 
         $certUser = $certUserRepo->findBySn($sn);
+
         if (!empty($certUser->cert_path)) {
             return $certUser;
         }
@@ -46,14 +47,14 @@ class Poster extends Service
 
         $username = sprintf('%s(%s)', $user->name, $user->id);
 
-        $content = '文联云课堂';
+        $content = '酷瓜云课堂';
 
         $qrUrl = kg_full_url(['for' => 'home.index']);
 
-        if ($cert->item_type == KgSaleModel::ITEM_COURSE) {
+        if ($cert->item_type == KgProductModel::ITEM_COURSE) {
             $content = sprintf('完成了课程《%s》的线上学习。', $cert->item_info['course']['title']);
             $qrUrl = kg_full_url(['for' => 'home.course.show', 'id' => $cert->item_info['course']['id']]);
-        } elseif ($cert->item_type == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($cert->item_type == KgProductModel::ITEM_EXAM_PAPER) {
             $content = sprintf('通过了试卷《%s》的线上测评。', $cert->item_info['exam_paper']['title']);
             $qrUrl = kg_full_url(['for' => 'home.exam_paper.show', 'id' => $cert->item_info['exam_paper']['id']]);
         } elseif ($cert->item_type == KgSaleModel::ITEM_TOPIC && !empty($cert->item_info['topic']['id'])) {
@@ -128,9 +129,7 @@ class Poster extends Service
 
     protected function getQrImage($url, $size = 120, $margin = 10, $bgColor = null)
     {
-        $text = urldecode($url);
-
-        $qrCode = new QrCode($text);
+        $qrCode = new QrCode($url);
 
         $qrCode->setSize($size);
 

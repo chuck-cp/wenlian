@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -22,7 +22,7 @@ class CloseOrderTask extends Task
     {
         $taskLockKey = $this->getTaskLockKey();
 
-        $taskLockId = LockUtil::addLock($taskLockKey);
+        $taskLockId = LockUtil::addLock($taskLockKey, 300);
 
         if (!$taskLockId) return;
 
@@ -35,6 +35,19 @@ class CloseOrderTask extends Task
         echo '------ start close order task ------' . PHP_EOL;
 
         foreach ($orders as $order) {
+            $this->closeOrder($order);
+        }
+
+        echo '------ end close order task ------' . PHP_EOL;
+
+        LockUtil::releaseLock($taskLockKey, $taskLockId);
+    }
+
+    protected function closeOrder(OrderModel $order)
+    {
+        try {
+
+            $this->db->begin();
 
             $order->status = OrderModel::STATUS_CLOSED;
 
@@ -53,11 +66,22 @@ class CloseOrderTask extends Task
             if ($promotionType == OrderModel::PROMOTION_COUPON) {
                 $this->revokeAppliedCoupon($couponId, $userId);
             }
+
+            $this->db->commit();
+
+        } catch (\Exception $e) {
+
+            $this->db->rollback();
+
+            $logger = $this->getLogger('order');
+
+            $logger->error('Close Order Task Exception: ' . kg_json_encode([
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'message' => $e->getMessage(),
+                    'order' => $order,
+                ]));
         }
-
-        echo '------ end close order task ------' . PHP_EOL;
-
-        LockUtil::releaseLock($taskLockKey, $taskLockId);
     }
 
     /**
@@ -66,14 +90,23 @@ class CloseOrderTask extends Task
      * @param int $limit
      * @return ResultsetInterface|Resultset|OrderModel[]
      */
-    protected function findOrders($limit = 1000)
+    protected function findOrders($limit = 500)
     {
         $status = OrderModel::STATUS_PENDING;
+
         $time = time() - 12 * 3600;
+
+        /**
+         * 秒杀订单有独立的关闭逻辑，不需要处理
+         */
+        $excludePromotionTypes = [
+            OrderModel::PROMOTION_FLASH_SALE,
+        ];
 
         return OrderModel::query()
             ->where('status = :status:', ['status' => $status])
             ->andWhere('create_time < :time:', ['time' => $time])
+            ->notInWhere('promotion_type', $excludePromotionTypes)
             ->limit($limit)
             ->execute();
     }

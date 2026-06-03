@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -9,7 +9,7 @@ namespace App\Services\Logic\FlashSale;
 
 use App\Exceptions\BadRequest as BadRequestException;
 use App\Models\FlashSale as FlashSaleModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Services\Logic\Order\OrderCreate as OrderCreateService;
 use App\Validators\FlashSale as FlashSaleValidator;
@@ -56,7 +56,7 @@ class OrderCreate extends OrderCreateService
 
             $order = new OrderModel();
 
-            if ($sale->item_type == KgSaleModel::ITEM_COURSE) {
+            if ($sale->item_type == KgProductModel::ITEM_COURSE) {
 
                 $course = $orderValidator->checkCourse($sale->item_id);
 
@@ -64,7 +64,7 @@ class OrderCreate extends OrderCreateService
 
                 $order = $this->createCourseOrder($course, $user);
 
-            } elseif ($sale->item_type == KgSaleModel::ITEM_PACKAGE) {
+            } elseif ($sale->item_type == KgProductModel::ITEM_PACKAGE) {
 
                 $package = $orderValidator->checkPackage($sale->item_id);
 
@@ -72,13 +72,13 @@ class OrderCreate extends OrderCreateService
 
                 $order = $this->createPackageOrder($package, $user);
 
-            } elseif ($sale->item_type == KgSaleModel::ITEM_VIP) {
+            } elseif ($sale->item_type == KgProductModel::ITEM_VIP) {
 
                 $vip = $orderValidator->checkVip($sale->item_id);
 
                 $order = $this->createVipOrder($vip, $user);
 
-            } elseif ($sale->item_type == KgSaleModel::ITEM_EXAM_PAPER) {
+            } elseif ($sale->item_type == KgProductModel::ITEM_EXAM_PAPER) {
 
                 $paper = $orderValidator->checkExamPaper($sale->item_id);
 
@@ -86,7 +86,7 @@ class OrderCreate extends OrderCreateService
 
                 $order = $this->createExamPaperOrder($paper, $user);
 
-            } elseif ($sale->item_type == KgSaleModel::ITEM_ARTICLE) {
+            } elseif ($sale->item_type == KgProductModel::ITEM_ARTICLE) {
 
                 $article = $orderValidator->checkArticle($sale->item_id);
 

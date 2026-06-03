@@ -260,7 +260,7 @@ layui.use(['jquery', 'helper'], function () {
 
     function antiScreenSwitchHandler() {
         player.pause();
-        var content = '<div class="layui-font-red layui-padding-4">请专心学习啦，不要三心二意！</div>';
+        var content = '<div class="layui-font-red layui-padding-4">请专心学习啦！</div>';
         layer.open({
             id: 'anti-switch-mask',
             type: 1,

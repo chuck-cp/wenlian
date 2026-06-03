@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -23,7 +23,7 @@ class CloseGrouponTeamTask extends Task
     {
         $taskLockKey = $this->getTaskLockKey();
 
-        $taskLockId = LockUtil::addLock($taskLockKey);
+        $taskLockId = LockUtil::addLock($taskLockKey, 300);
 
         if (!$taskLockId) return;
 
@@ -43,26 +43,8 @@ class CloseGrouponTeamTask extends Task
 
         echo '------ start handle active team task ------' . PHP_EOL;
 
-        $grouponRepo = new GrouponRepo();
-
         foreach ($teams as $team) {
-
-            $finished = $team->target_order_count == $team->finish_order_count;
-
-            $groupon = $grouponRepo->findById($team->groupon_id);
-
-            $virtual = $groupon->virtual_partner == 1;
-
-            /**
-             * 完成拼团或虚拟拼团则发货，否则退款
-             */
-            if ($finished || $virtual) {
-                $deliverService = new GrouponTeamDeliverService();
-                $deliverService->handle($team);
-            } else {
-                $refundService = new GrouponTeamRefundService();
-                $refundService->handle($team);
-            }
+            $this->closeActiveTeam($team);
         }
 
         echo '------ end handle active team task ------' . PHP_EOL;
@@ -79,11 +61,65 @@ class CloseGrouponTeamTask extends Task
         echo '------ start handle pending team task ------' . PHP_EOL;
 
         foreach ($teams as $team) {
-            $closeService = new GrouponTeamCloseService();
-            $closeService->handle($team);
+            $this->closePendingTeam($team);
         }
 
         echo '------ end handle pending team task ------' . PHP_EOL;
+    }
+
+    protected function closeActiveTeam(GrouponTeamModel $team)
+    {
+        $grouponRepo = new GrouponRepo();
+        $groupon = $grouponRepo->findById($team->groupon_id);
+
+        $finished = $team->finish_order_count >= $team->target_order_count;
+        $virtual = $groupon->virtual_partner == 1;
+
+        try {
+
+            /**
+             * 完成拼团或虚拟拼团则发货，否则退款
+             */
+            if ($finished || $virtual) {
+                $deliverService = new GrouponTeamDeliverService();
+                $deliverService->handle($team);
+            } else {
+                $refundService = new GrouponTeamRefundService();
+                $refundService->handle($team);
+            }
+
+        } catch (\Exception $e) {
+
+            $logger = $this->getLogger('groupon');
+
+            $logger->error('Close Groupon Active Team Exception: ' . kg_json_encode([
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'message' => $e->getMessage(),
+                    'team' => $team,
+                ]));
+        }
+    }
+
+    protected function closePendingTeam(GrouponTeamModel $team)
+    {
+        try {
+
+            $closeService = new GrouponTeamCloseService();
+
+            $closeService->handle($team);
+
+        } catch (\Exception $e) {
+
+            $logger = $this->getLogger('groupon');
+
+            $logger->error('Close Groupon Pending Team Exception: ' . kg_json_encode([
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'message' => $e->getMessage(),
+                    'team' => $team,
+                ]));
+        }
     }
 
     /**
@@ -96,21 +132,12 @@ class CloseGrouponTeamTask extends Task
     {
         $status = GrouponTeamModel::STATUS_ACTIVE;
 
-        $teams = GrouponTeamModel::query()
-            ->where('target_order_count = finish_order_count')
-            ->andWhere('status = :status:', ['status' => $status])
+        return GrouponTeamModel::query()
+            ->where('status = :status:', ['status' => $status])
+            ->andWhere('finish_order_count >= target_order_count OR expire_time < :expire_time:', ['expire_time' => time()])
+            ->orderBy('id ASC')
             ->limit($limit)
             ->execute();
-
-        if ($teams->count() == 0) {
-            $teams = GrouponTeamModel::query()
-                ->where('expire_time < :expire_time:', ['expire_time' => time()])
-                ->andWhere('status = :status:', ['status' => $status])
-                ->limit($limit)
-                ->execute();
-        }
-
-        return $teams;
     }
 
     /**

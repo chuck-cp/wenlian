@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -34,48 +34,50 @@ class TeamRefund extends LogicService
 
             $teamUsers = $teamRepo->findFinishedTeamUsers($team->id);
 
-            if ($teamUsers->count() == 0) return;
+            if ($teamUsers->count() > 0) {
 
-            $orderIds = kg_array_column($teamUsers->toArray(), 'order_id');
+                $orderIds = kg_array_column($teamUsers->toArray(), 'order_id');
 
-            $orderRepo = new OrderRepo();
+                $orderRepo = new OrderRepo();
 
-            $orders = $orderRepo->findByIds($orderIds);
+                $orders = $orderRepo->findByIds($orderIds);
 
-            if ($orders->count() == 0) return;
+                if ($orders->count() > 0) {
 
-            foreach ($orders as $order) {
+                    foreach ($orders as $order) {
 
-                if ($order->status != OrderModel::STATUS_DELIVERING) continue;
+                        if ($order->status != OrderModel::STATUS_DELIVERING) continue;
 
-                $trade = $orderRepo->findFinishedTrade($order->id);
+                        $trade = $orderRepo->findFinishedTrade($order->id);
 
-                if (!$trade) continue;
+                        if (!$trade) continue;
 
-                $refund = new RefundModel();
+                        $refund = new RefundModel();
 
-                $refund->subject = $order->subject;
-                $refund->amount = $trade->amount;
-                $refund->order_id = $order->id;
-                $refund->trade_id = $trade->id;
-                $refund->owner_id = $order->owner_id;
-                $refund->status = RefundModel::STATUS_APPROVED;
-                $refund->apply_note = '团购未成团';
-                $refund->review_note = '团购未成团，无条件审批';
-                $refund->create();
+                        $refund->subject = $order->subject;
+                        $refund->amount = $trade->amount;
+                        $refund->order_id = $order->id;
+                        $refund->trade_id = $trade->id;
+                        $refund->owner_id = $order->owner_id;
+                        $refund->status = RefundModel::STATUS_APPROVED;
+                        $refund->apply_note = '团购未成团';
+                        $refund->review_note = '团购未成团，无条件审批';
+                        $refund->create();
 
-                $task = new TaskModel();
+                        $task = new TaskModel();
 
-                $itemInfo = [
-                    'refund' => ['id' => $refund->id],
-                ];
+                        $itemInfo = [
+                            'refund' => ['id' => $refund->id],
+                        ];
 
-                $task->item_id = $refund->id;
-                $task->item_info = $itemInfo;
-                $task->item_type = TaskModel::TYPE_REFUND;
-                $task->priority = TaskModel::PRIORITY_MIDDLE;
-                $task->status = TaskModel::STATUS_PENDING;
-                $task->create();
+                        $task->item_id = $refund->id;
+                        $task->item_info = $itemInfo;
+                        $task->item_type = TaskModel::TYPE_REFUND;
+                        $task->priority = TaskModel::PRIORITY_MIDDLE;
+                        $task->status = TaskModel::STATUS_PENDING;
+                        $task->create();
+                    }
+                }
             }
 
             $this->db->commit();
@@ -90,6 +92,7 @@ class TeamRefund extends LogicService
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                     'message' => $e->getMessage(),
+                    'team' => $team,
                 ]));
 
             throw new \RuntimeException('sys.trans_rollback');

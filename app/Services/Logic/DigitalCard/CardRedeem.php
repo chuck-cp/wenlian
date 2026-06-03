@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -10,7 +10,7 @@ namespace App\Services\Logic\DigitalCard;
 use App\Models\Article as ArticleModel;
 use App\Models\Course as CourseModel;
 use App\Models\ExamPaper as ExamPaperModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Package as PackageModel;
 use App\Models\User as UserModel;
 use App\Models\Vip as VipModel;
@@ -37,31 +37,31 @@ class CardRedeem extends LogicService
 
         $user = $this->getLoginUser();
 
-        if ($card->item_type == KgSaleModel::ITEM_COURSE) {
+        if ($card->item_type == KgProductModel::ITEM_COURSE) {
 
             $course = $cardValidator->checkCourse($card->item_id);
 
             $this->handleCourseRedeem($course, $user);
 
-        } elseif ($card->item_type == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($card->item_type == KgProductModel::ITEM_PACKAGE) {
 
             $package = $cardValidator->checkPackage($card->item_id);
 
             $this->handlePackageRedeem($package, $user);
 
-        } elseif ($card->item_type == KgSaleModel::ITEM_VIP) {
+        } elseif ($card->item_type == KgProductModel::ITEM_VIP) {
 
             $vip = $cardValidator->checkVip($card->item_id);
 
             $this->handleVipRedeem($vip, $user);
 
-        } elseif ($card->item_type == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($card->item_type == KgProductModel::ITEM_EXAM_PAPER) {
 
             $paper = $cardValidator->checkExamPaper($card->item_id);
 
             $this->handleExamPaperRedeem($paper, $user);
 
-        } elseif ($card->item_type == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($card->item_type == KgProductModel::ITEM_ARTICLE) {
 
             $article = $cardValidator->checkArticle($card->item_id);
 

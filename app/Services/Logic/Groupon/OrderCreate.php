@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -9,7 +9,7 @@ namespace App\Services\Logic\Groupon;
 
 use App\Models\GrouponTeam as GrouponTeamModel;
 use App\Models\GrouponTeamUser as GrouponTeamUserModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Repos\GrouponTeam as GrouponTeamRepo;
 use App\Repos\GrouponTeamUser as GrouponTeamUserRepo;
@@ -101,7 +101,7 @@ class OrderCreate extends OrderCreateService
 
         $order = new OrderModel();
 
-        if ($groupon->item_type == KgSaleModel::ITEM_COURSE) {
+        if ($groupon->item_type == KgProductModel::ITEM_COURSE) {
 
             $course = $orderValidator->checkCourse($groupon->item_id);
 
@@ -109,7 +109,7 @@ class OrderCreate extends OrderCreateService
 
             $order = $this->createCourseOrder($course, $user);
 
-        } elseif ($groupon->item_type == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($groupon->item_type == KgProductModel::ITEM_PACKAGE) {
 
             $package = $orderValidator->checkPackage($groupon->item_id);
 
@@ -117,13 +117,13 @@ class OrderCreate extends OrderCreateService
 
             $order = $this->createPackageOrder($package, $user);
 
-        } elseif ($groupon->item_type == KgSaleModel::ITEM_VIP) {
+        } elseif ($groupon->item_type == KgProductModel::ITEM_VIP) {
 
             $vip = $orderValidator->checkVip($groupon->item_id);
 
             $order = $this->createVipOrder($vip, $user);
 
-        } elseif ($groupon->item_type == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($groupon->item_type == KgProductModel::ITEM_EXAM_PAPER) {
 
             $paper = $orderValidator->checkExamPaper($groupon->item_id);
 
@@ -131,7 +131,7 @@ class OrderCreate extends OrderCreateService
 
             $order = $this->createExamPaperOrder($paper, $user);
 
-        } elseif ($groupon->item_type == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($groupon->item_type == KgProductModel::ITEM_ARTICLE) {
 
             $article = $orderValidator->checkArticle($groupon->item_id);
 

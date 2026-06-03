@@ -80,7 +80,7 @@
             if ($licenseLayer.length > 0) {
                 layer.open({
                     type: 1,
-                    title: '文联云课堂',
+                    title: '酷瓜云课堂',
                     area: ['480px', '160px'],
                     content: $licenseLayer.html(),
                 });

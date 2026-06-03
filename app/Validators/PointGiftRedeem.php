@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -11,7 +11,7 @@ use App\Exceptions\BadRequest as BadRequestException;
 use App\Models\Article as ArticleModel;
 use App\Models\Course as CourseModel;
 use App\Models\ExamPaper as ExamPaperModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\PointGift as PointGiftModel;
 use App\Models\User as UserModel;
 use App\Models\Vip as VipModel;
@@ -53,7 +53,7 @@ class PointGiftRedeem extends Validator
 
         $this->checkPointBalance($gift, $user);
 
-        if ($gift->type == KgSaleModel::ITEM_COURSE) {
+        if ($gift->type == KgProductModel::ITEM_COURSE) {
 
             $validator = new Course();
 
@@ -61,7 +61,7 @@ class PointGiftRedeem extends Validator
 
             $this->checkIfAllowRedeemCourse($course, $user);
 
-        } elseif ($gift->type == KgSaleModel::ITEM_VIP) {
+        } elseif ($gift->type == KgProductModel::ITEM_VIP) {
 
             $validator = new Vip();
 
@@ -69,7 +69,7 @@ class PointGiftRedeem extends Validator
 
             $this->checkIfAllowRedeemVip($vip, $user);
 
-        } elseif ($gift->type == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($gift->type == KgProductModel::ITEM_EXAM_PAPER) {
 
             $validator = new ExamPaper();
 
@@ -77,7 +77,7 @@ class PointGiftRedeem extends Validator
 
             $this->checkIfAllowRedeemExamPaper($paper, $user);
 
-        } elseif ($gift->type == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($gift->type == KgProductModel::ITEM_ARTICLE) {
 
             $validator = new Article();
 
@@ -85,7 +85,7 @@ class PointGiftRedeem extends Validator
 
             $this->checkIfAllowRedeemArticle($article, $user);
 
-        } elseif ($gift->type == KgSaleModel::ITEM_GOODS) {
+        } elseif ($gift->type == KgProductModel::ITEM_GOODS) {
 
             $this->checkIfAllowRedeemGoods($user);
         }

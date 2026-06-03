@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2023 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2023 深圳市酷瓜软件有限公司
  * @license https://openitem.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Models;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use Phalcon\Mvc\Model\Behavior\SoftDelete;
 
 class Certificate extends Model
@@ -39,19 +39,6 @@ class Certificate extends Model
      */
     protected $_exam_paper_info = [
         'exam_paper' => [
-            'id' => 0,
-            'title' => '',
-            'cover' => '',
-        ]
-    ];
-
-    /**
-     * 专题扩展信息
-     *
-     * @var array
-     */
-    protected $_topic_info = [
-        'topic' => [
             'id' => 0,
             'title' => '',
             'cover' => '',
@@ -168,16 +155,12 @@ class Certificate extends Model
 
     public function beforeCreate()
     {
-        if (empty($this->grant_type)) {
-            $this->grant_type = self::GRANT_TYPE_MANUAL;
-        }
-
         if (empty($this->item_info)) {
-            if ($this->item_type == KgSaleModel::ITEM_COURSE) {
+            if ($this->item_type == KgProduct::ITEM_COURSE) {
                 $this->item_info = $this->_course_info;
-            } elseif ($this->item_type == KgSaleModel::ITEM_EXAM_PAPER) {
+            } elseif ($this->item_type == KgProduct::ITEM_EXAM_PAPER) {
                 $this->item_info = $this->_exam_paper_info;
-            } elseif ($this->item_type == KgSaleModel::ITEM_TOPIC) {
+            } elseif ($this->item_type == KgProduct::ITEM_TOPIC) {
                 $this->item_info = $this->_topic_info;
             }
         }
@@ -227,9 +210,9 @@ class Certificate extends Model
     public static function itemTypes()
     {
         return [
-            KgSaleModel::ITEM_COURSE => '课程',
-            KgSaleModel::ITEM_EXAM_PAPER => '考试',
-            KgSaleModel::ITEM_TOPIC => '专题',
+            KgProductModel::ITEM_COURSE => '课程',
+            KgProductModel::ITEM_EXAM_PAPER => '考试',
+            KgProductModel::ITEM_TOPIC => '专题',
         ];
     }
 

@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Services\Logic\Point;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\PointGift as PointGiftModel;
 use App\Models\User as UserModel;
 use App\Repos\User as UserRepo;
@@ -37,15 +37,15 @@ class GiftInfo extends LogicService
 
         $user = $this->getCurrentUser();
 
-        if ($gift->type == KgSaleModel::ITEM_COURSE) {
+        if ($gift->type == KgProductModel::ITEM_COURSE) {
             $gift = $this->handleCoursePointGift($gift);
-        } elseif ($gift->type == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($gift->type == KgProductModel::ITEM_PACKAGE) {
             $gift = $this->handlePackagePointGift($gift);
-        } elseif ($gift->type == KgSaleModel::ITEM_VIP) {
+        } elseif ($gift->type == KgProductModel::ITEM_VIP) {
             $gift = $this->handleVipPointGift($gift);
-        }elseif ($gift->type == KgSaleModel::ITEM_EXAM_PAPER) {
+        }elseif ($gift->type == KgProductModel::ITEM_EXAM_PAPER) {
             $gift = $this->handleExamPaperPointGift($gift);
-        } elseif ($gift->type == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($gift->type == KgProductModel::ITEM_ARTICLE) {
             $gift = $this->handleArticlePointGift($gift);
         }
 

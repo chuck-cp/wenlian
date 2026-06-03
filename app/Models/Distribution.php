@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -200,15 +200,15 @@ class Distribution extends Model
     public function beforeCreate()
     {
         if (empty($this->item_info)) {
-            if ($this->item_type == KgSale::ITEM_COURSE) {
+            if ($this->item_type == KgProduct::ITEM_COURSE) {
                 $this->item_info = $this->_course_info;
-            } elseif ($this->item_type == KgSale::ITEM_PACKAGE) {
+            } elseif ($this->item_type == KgProduct::ITEM_PACKAGE) {
                 $this->item_info = $this->_package_info;
-            } elseif ($this->item_type == KgSale::ITEM_VIP) {
+            } elseif ($this->item_type == KgProduct::ITEM_VIP) {
                 $this->item_info = $this->_vip_info;
-            } elseif ($this->item_type == KgSale::ITEM_EXAM_PAPER) {
+            } elseif ($this->item_type == KgProduct::ITEM_EXAM_PAPER) {
                 $this->item_info = $this->_exam_paper_info;
-            } elseif ($this->item_type == KgSale::ITEM_ARTICLE) {
+            } elseif ($this->item_type == KgProduct::ITEM_ARTICLE) {
                 $this->item_info = $this->_article_info;
             }
         }
@@ -248,11 +248,11 @@ class Distribution extends Model
     public static function itemTypes()
     {
         return [
-            KgSale::ITEM_COURSE => '课程',
-            KgSale::ITEM_PACKAGE => '套餐',
-            KgSale::ITEM_EXAM_PAPER => '试卷',
-            KgSale::ITEM_ARTICLE => '专栏',
-            KgSale::ITEM_VIP => '会员',
+            KgProduct::ITEM_COURSE => '课程',
+            KgProduct::ITEM_PACKAGE => '套餐',
+            KgProduct::ITEM_EXAM_PAPER => '试卷',
+            KgProduct::ITEM_ARTICLE => '专栏',
+            KgProduct::ITEM_VIP => '会员',
         ];
     }
 

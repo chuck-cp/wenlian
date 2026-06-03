@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2024 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2024 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -9,7 +9,7 @@ namespace App\Services\Logic\Coupon;
 
 use App\Models\Coupon as CouponModel;
 use App\Models\CouponUser as CouponUserModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Repos\Coupon as CouponRepo;
 use App\Repos\CouponUser as CouponUserRepo;
 
@@ -56,11 +56,11 @@ trait CouponOrderTrait
     protected function allowApplyCoupon(int $itemType): bool
     {
         $whitelist = [
-            KgSaleModel::ITEM_COURSE,
-            KgSaleModel::ITEM_PACKAGE,
-            KgSaleModel::ITEM_VIP,
-            KgSaleModel::ITEM_EXAM_PAPER,
-            KgSaleModel::ITEM_ARTICLE,
+            KgProductModel::ITEM_COURSE,
+            KgProductModel::ITEM_PACKAGE,
+            KgProductModel::ITEM_VIP,
+            KgProductModel::ITEM_EXAM_PAPER,
+            KgProductModel::ITEM_ARTICLE,
         ];
 
         return in_array($itemType, $whitelist);

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -8,7 +8,7 @@
 namespace App\Services\Logic\FlashSale;
 
 use App\Models\FlashSale as FlashSaleModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 
 trait SaleInfoTrait
 {
@@ -28,7 +28,7 @@ trait SaleInfoTrait
             'cover' => '',
         ];
 
-        if ($itemType == KgSaleModel::ITEM_COURSE) {
+        if ($itemType == KgProductModel::ITEM_COURSE) {
             $result = [
                 'id' => $itemInfo['course']['id'],
                 'title' => $itemInfo['course']['title'],
@@ -36,7 +36,7 @@ trait SaleInfoTrait
                 'cover' => $this->cosUrl . $itemInfo['course']['cover'],
                 'type' => $itemType,
             ];
-        } elseif ($itemType == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($itemType == KgProductModel::ITEM_PACKAGE) {
             $result = [
                 'id' => $itemInfo['package']['id'],
                 'title' => $itemInfo['package']['title'],
@@ -44,7 +44,7 @@ trait SaleInfoTrait
                 'cover' => $this->cosUrl . $itemInfo['package']['cover'],
                 'type' => $itemType,
             ];
-        } elseif ($itemType == KgSaleModel::ITEM_VIP) {
+        } elseif ($itemType == KgProductModel::ITEM_VIP) {
             $result = [
                 'id' => $itemInfo['vip']['id'],
                 'title' => $itemInfo['vip']['title'],
@@ -52,7 +52,7 @@ trait SaleInfoTrait
                 'cover' => $this->cosUrl . $itemInfo['vip']['cover'],
                 'type' => $itemType,
             ];
-        } elseif ($itemType == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($itemType == KgProductModel::ITEM_EXAM_PAPER) {
             $result = [
                 'id' => $itemInfo['exam_paper']['id'],
                 'title' => $itemInfo['exam_paper']['title'],
@@ -60,7 +60,7 @@ trait SaleInfoTrait
                 'cover' => $this->cosUrl . $itemInfo['exam_paper']['cover'],
                 'type' => $itemType,
             ];
-        } elseif ($itemType == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($itemType == KgProductModel::ITEM_ARTICLE) {
             $result = [
                 'id' => $itemInfo['article']['id'],
                 'title' => $itemInfo['article']['title'],

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -22,7 +22,7 @@ class CloseFlashSaleOrderTask extends Task
     {
         $taskLockKey = $this->getTaskLockKey();
 
-        $taskLockId = LockUtil::addLock($taskLockKey);
+        $taskLockId = LockUtil::addLock($taskLockKey,300);
 
         if (!$taskLockId) return;
 
@@ -35,16 +35,43 @@ class CloseFlashSaleOrderTask extends Task
         echo '------ start close order task ------' . PHP_EOL;
 
         foreach ($orders as $order) {
-            $this->incrFlashSaleStock($order->promotion_id);
-            $this->pushFlashSaleQueue($order->promotion_id);
-            $this->deleteUserOrderCache($order->owner_id, $order->promotion_id);
-            $order->status = OrderModel::STATUS_CLOSED;
-            $order->update();
+            $this->closeOrder($order);
         }
 
         LockUtil::releaseLock($taskLockKey, $taskLockId);
 
         echo '------ end close order task ------' . PHP_EOL;
+    }
+
+    protected function closeOrder(OrderModel $order): void
+    {
+        try {
+
+            $this->db->begin();
+
+            $this->incrFlashSaleStock($order->promotion_id);
+
+            $order->status = OrderModel::STATUS_CLOSED;
+            $order->update();
+
+            $this->db->commit();
+
+            $this->pushFlashSaleQueue($order->promotion_id);
+            $this->deleteUserOrderCache($order->owner_id, $order->promotion_id);
+
+        } catch (\Exception $e) {
+
+            $this->db->rollback();
+
+            $logger = $this->getLogger('order');
+
+            $logger->error('Close FlashSale Order Exception: ' . kg_json_encode([
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'message' => $e->getMessage(),
+                    'order' => $order,
+                ]));
+        }
     }
 
     protected function incrFlashSaleStock($saleId)
@@ -78,7 +105,7 @@ class CloseFlashSaleOrderTask extends Task
      * @param int $limit
      * @return ResultsetInterface|Resultset|OrderModel[]
      */
-    protected function findOrders($limit = 1000)
+    protected function findOrders($limit = 500)
     {
         $status = OrderModel::STATUS_PENDING;
         $type = OrderModel::PROMOTION_FLASH_SALE;

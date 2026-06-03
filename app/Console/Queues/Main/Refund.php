@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2023 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2023 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Console\Queues\Main;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Models\Refund as RefundModel;
 use App\Models\Task as TaskModel;
@@ -131,22 +131,22 @@ class Refund extends Injectable
     protected function handleOrderRefund(OrderModel $order)
     {
         switch ($order->item_type) {
-            case KgSaleModel::ITEM_COURSE:
+            case KgProductModel::ITEM_COURSE:
                 $this->handleCourseOrderRefund($order);
                 break;
-            case KgSaleModel::ITEM_PACKAGE:
+            case KgProductModel::ITEM_PACKAGE:
                 $this->handlePackageOrderRefund($order);
                 break;
-            case KgSaleModel::ITEM_VIP:
+            case KgProductModel::ITEM_VIP:
                 $this->handleVipOrderRefund($order);
                 break;
-            case KgSaleModel::ITEM_EXAM_PAPER:
+            case KgProductModel::ITEM_EXAM_PAPER:
                 $this->handleExamPaperOrderRefund($order);
                 break;
-            case KgSaleModel::ITEM_ARTICLE:
+            case KgProductModel::ITEM_ARTICLE:
                 $this->handleArticleOrderRefund($order);
                 break;
-            case KgSaleModel::ITEM_PAY_TEST:
+            case KgProductModel::ITEM_PAY_TEST:
                 $this->handleTestOrderRefund($order);
                 break;
         }

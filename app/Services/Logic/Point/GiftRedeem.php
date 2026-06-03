@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -9,7 +9,7 @@ namespace App\Services\Logic\Point;
 
 use App\Library\Utils\Lock as LockUtil;
 use App\Models\PointGift as PointGiftModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\PointGiftRedeem as PointGiftRedeemModel;
 use App\Models\Task as TaskModel;
 use App\Models\User as UserModel;
@@ -36,7 +36,7 @@ class GiftRedeem extends LogicService
 
         $contact = new UserContactModel();
 
-        if ($gift->type == KgSaleModel::ITEM_GOODS) {
+        if ($gift->type == KgProductModel::ITEM_GOODS) {
             $contact = $validator->checkUserContact($post['contact_id']);
         }
 
@@ -68,7 +68,7 @@ class GiftRedeem extends LogicService
             $redeem->gift_name = $gift->name;
             $redeem->gift_point = $gift->point;
 
-            if ($gift->type == KgSaleModel::ITEM_GOODS) {
+            if ($gift->type == KgProductModel::ITEM_GOODS) {
                 $redeem->contact_id = $contact->id;
                 $redeem->contact_name = $contact->name;
                 $redeem->contact_phone = $contact->phone;

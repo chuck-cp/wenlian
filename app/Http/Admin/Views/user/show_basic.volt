@@ -31,16 +31,6 @@
         {% endif %}
         <td>用户性别：{{ gender_info(user.gender) }}</td>
     </tr>
-    <tr>
-        <td>教学角色：{{ user.getEduRoleName() }}</td>
-        {% if user.edu_role == 3 and user.edu_role_label %}
-            <td>自定义名称：{{ user.edu_role_label }}</td>
-        {% else %}
-            <td></td>
-        {% endif %}
-        <td></td>
-        <td></td>
-    </tr>
     <!-- <tr>
         <td>可用积分：{{ balance.point }}</td>
         <td>可用资金：{{ '￥%0.2f'|format(balance.cash) }}</td>

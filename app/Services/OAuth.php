@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -61,7 +61,7 @@ abstract class OAuth extends Service
     {
         $client = new HttpClient();
 
-        $options = ['query' => $params, 'headers' => $headers];
+        $options = ['form_params' => $params, 'headers' => $headers];
 
         $response = $client->post($uri, $options);
 

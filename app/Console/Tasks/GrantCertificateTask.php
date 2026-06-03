@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2023 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2023 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -12,8 +12,7 @@ use App\Repos\Certificate as CertificateRepo;
 use App\Models\CertificateUser as CertificateUserModel;
 use App\Models\CourseUser as CourseUserModel;
 use App\Models\ExamPaperUser as ExamPaperUserModel;
-use App\Models\KgSale as KgSaleModel;
-use App\Repos\Topic as TopicRepo;
+use App\Models\KgProduct as KgProductModel;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Mvc\Model\ResultsetInterface;
 
@@ -31,11 +30,11 @@ class GrantCertificateTask extends Task
         echo '------ start grant certs task ------' . PHP_EOL;
 
         foreach ($certs as $cert) {
-            if ($cert->item_type == KgSaleModel::ITEM_COURSE) {
+            if ($cert->item_type == KgProductModel::ITEM_COURSE) {
                 $this->handleCourseCert($cert);
-            } elseif ($cert->item_type == KgSaleModel::ITEM_EXAM_PAPER) {
+            } elseif ($cert->item_type == KgProductModel::ITEM_EXAM_PAPER) {
                 $this->handleExamPaperCert($cert);
-            } elseif ($cert->item_type == KgSaleModel::ITEM_TOPIC) {
+            } elseif ($cert->item_type == KgProductModel::ITEM_TOPIC) {
                 $this->handleTopicCert($cert);
             }
             $this->handleGrantCount($cert);
@@ -90,64 +89,6 @@ class GrantCertificateTask extends Task
         }
     }
 
-    protected function handleTopicCert(CertificateModel $cert)
-    {
-        $topicRepo = new TopicRepo();
-
-        $courses = $topicRepo->findCourses($cert->item_id);
-
-        $courseIds = [];
-
-        foreach ($courses as $course) {
-            $courseIds[] = $course->id;
-        }
-
-        if (count($courseIds) === 0) {
-            return;
-        }
-
-        $topicUserIds = null;
-
-        foreach ($courseIds as $courseId) {
-            $uids = $this->findCourseUserIds($courseId);
-
-            if (count($uids) === 0) {
-                return;
-            }
-
-            if ($topicUserIds === null) {
-                $topicUserIds = $uids;
-            } else {
-                $topicUserIds = array_intersect($topicUserIds, $uids);
-            }
-
-            if (count($topicUserIds) === 0) {
-                return;
-            }
-        }
-
-        $topicUserIds = array_values($topicUserIds);
-
-        $certUserIds = $this->findCertUserIds($cert->id);
-
-        $userIds = array_diff($topicUserIds, $certUserIds);
-
-        $grantCount = count($userIds);
-
-        echo "------ topic certs: {$grantCount} ------" . PHP_EOL;
-
-        if ($grantCount === 0) {
-            return;
-        }
-
-        foreach ($userIds as $userId) {
-            $certUser = new CertificateUserModel();
-            $certUser->cert_id = $cert->id;
-            $certUser->user_id = $userId;
-            $certUser->create();
-        }
-    }
-
     protected function handleGrantCount(CertificateModel $cert)
     {
         $certRepo = new CertificateRepo();
@@ -189,7 +130,7 @@ class GrantCertificateTask extends Task
 
         $rows = CourseUserModel::query()
             ->where('course_id = :course_id:', ['course_id' => $courseId])
-            ->andWhere('progress >= 95')
+            ->andWhere('progress >= 80')
             ->andWhere('deleted = 0')
             ->execute();
 
@@ -231,8 +172,7 @@ class GrantCertificateTask extends Task
     protected function findAllCerts()
     {
         return CertificateModel::query()
-            ->where('grant_type = :grant_type:', ['grant_type' => CertificateModel::GRANT_TYPE_AUTO])
-            ->andWhere('published = 1')
+            ->where('published = 1')
             ->andWhere('deleted = 0')
             ->execute();
     }

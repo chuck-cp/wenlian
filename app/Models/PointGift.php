@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -186,15 +186,15 @@ class PointGift extends Model
     public function beforeCreate()
     {
         if (empty($this->attrs)) {
-            if ($this->type == KgSale::ITEM_COURSE) {
+            if ($this->type == KgProduct::ITEM_COURSE) {
                 $this->attrs = $this->_course_attrs;
-            } elseif ($this->type == KgSale::ITEM_ARTICLE) {
+            } elseif ($this->type == KgProduct::ITEM_ARTICLE) {
                 $this->attrs = $this->_article_attrs;
-            } elseif ($this->type == KgSale::ITEM_VIP) {
+            } elseif ($this->type == KgProduct::ITEM_VIP) {
                 $this->attrs = $this->_vip_attrs;
-            } elseif ($this->type == KgSale::ITEM_EXAM_PAPER) {
+            } elseif ($this->type == KgProduct::ITEM_EXAM_PAPER) {
                 $this->attrs = $this->_exam_paper_attrs;
-            } elseif ($this->type == KgSale::ITEM_GOODS) {
+            } elseif ($this->type == KgProduct::ITEM_GOODS) {
                 $this->attrs = $this->_goods_attrs;
             }
         }
@@ -247,11 +247,11 @@ class PointGift extends Model
     public static function types()
     {
         return [
-            KgSale::ITEM_COURSE => '课程',
-            KgSale::ITEM_EXAM_PAPER => '试卷',
-            KgSale::ITEM_ARTICLE => '专栏',
-            KgSale::ITEM_VIP => '会员',
-            KgSale::ITEM_GOODS => '实物',
+            KgProduct::ITEM_COURSE => '课程',
+            KgProduct::ITEM_EXAM_PAPER => '试卷',
+            KgProduct::ITEM_ARTICLE => '专栏',
+            KgProduct::ITEM_VIP => '会员',
+            KgProduct::ITEM_GOODS => '实物',
         ];
     }
 

@@ -15,10 +15,12 @@
         </div>
         <div class="text">{{ chapter.user_count }}</div>
     </div>
+    {% if show_comment is not defined or show_comment %}
     <div class="item" id="toolbar-comment">
         <div class="icon" title="评论交流">
             <i class="layui-icon layui-icon-reply-fill icon-reply"></i>
         </div>
         <div class="text" data-count="{{ chapter.comment_count }}">{{ chapter.comment_count }}</div>
     </div>
+    {% endif %}
 </div>

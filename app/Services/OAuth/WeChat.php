@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -42,7 +42,7 @@ class WeChat extends OAuth
             'grant_type' => 'authorization_code',
         ];
 
-        $response = $this->httpPost(self::ACCESS_TOKEN_URL, $params);
+        $response = $this->httpGet(self::ACCESS_TOKEN_URL, $params);
 
         $this->accessToken = $this->parseAccessToken($response);
 

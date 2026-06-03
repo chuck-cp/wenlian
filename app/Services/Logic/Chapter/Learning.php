@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -23,18 +23,20 @@ class Learning extends LogicService
     {
         $post = $this->request->getPost();
 
+        $chapter = $this->checkChapterCache($id);
+
+        $user = $this->getLoginUser(true);
+
         $settings = $this->getSettings('vod');
 
         /**
          * 真人验证检查
          */
-        if ($settings['human_verify_enabled'] == 1 && $post['human_verified'] == 0) {
-            return;
+        if ($chapter->model == CourseModel::MODEL_VOD) {
+            if ($settings['human_verify_enabled'] == 1 && $post['human_verified'] == 0) {
+                return;
+            }
         }
-
-        $chapter = $this->checkChapterCache($id);
-
-        $user = $this->getLoginUser(true);
 
         $validator = new LearningValidator();
 

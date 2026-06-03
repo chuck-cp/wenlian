@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Services\Logic\Order;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Repos\Article as ArticleRepo;
 use App\Repos\Course as CourseRepo;
 use App\Repos\ExamPaper as ExamPaperRepo;
@@ -24,7 +24,7 @@ class ItemSalePrice
             'vip_price' => 0,
         ];
 
-        if ($itemType == KgSaleModel::ITEM_COURSE) {
+        if ($itemType == KgProductModel::ITEM_COURSE) {
 
             $courseRepo = new CourseRepo();
 
@@ -33,7 +33,7 @@ class ItemSalePrice
             $result['market_price'] = $course->market_price;
             $result['vip_price'] = $course->vip_price;
 
-        } elseif ($itemType == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($itemType == KgProductModel::ITEM_PACKAGE) {
 
             $packageRepo = new PackageRepo();
 
@@ -42,7 +42,7 @@ class ItemSalePrice
             $result['market_price'] = $package->market_price;
             $result['vip_price'] = $package->vip_price;
 
-        } elseif ($itemType == KgSaleModel::ITEM_VIP) {
+        } elseif ($itemType == KgProductModel::ITEM_VIP) {
 
             $vipRepo = new VipRepo();
 
@@ -51,7 +51,7 @@ class ItemSalePrice
             $result['market_price'] = $vip->price;
             $result['vip_price'] = $vip->price;
 
-        } elseif ($itemType == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($itemType == KgProductModel::ITEM_EXAM_PAPER) {
 
             $paperRepo = new ExamPaperRepo();
 
@@ -60,7 +60,7 @@ class ItemSalePrice
             $result['market_price'] = $paper->market_price;
             $result['vip_price'] = $paper->vip_price;
 
-        } elseif ($itemType == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($itemType == KgProductModel::ITEM_ARTICLE) {
 
             $articleRepo = new ArticleRepo();
 

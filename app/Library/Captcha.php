@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -31,7 +31,7 @@ class Captcha
 
         $expression = $this->getExpression();
 
-        $this->cache->save($cacheKey, $expression['result'], 600);
+        $this->cache->save($cacheKey, $expression['result'], 60);
 
         $width = 100;
         $height = 25;
@@ -79,6 +79,15 @@ class Captcha
         $content = $this->cache->get($key);
 
         return $content == $rand;
+    }
+
+    public function clear($ticket)
+    {
+        if (!$ticket) return;
+
+        $key = $this->getCacheKey($ticket);
+
+        $this->cache->delete($key);
     }
 
     protected function getExpression()

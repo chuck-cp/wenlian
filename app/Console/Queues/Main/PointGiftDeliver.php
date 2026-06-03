@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2023 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2023 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Console\Queues\Main;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\PointGiftRedeem as PointGiftRedeemModel;
 use App\Models\Task as TaskModel;
 use App\Repos\Article as ArticleRepo;
@@ -44,19 +44,19 @@ class PointGiftDeliver extends Injectable
             $this->db->begin();
 
             switch ($redeem->gift_type) {
-                case KgSaleModel::ITEM_COURSE:
+                case KgProductModel::ITEM_COURSE:
                     $this->handleCourseRedeem($redeem);
                     break;
-                case KgSaleModel::ITEM_VIP:
+                case KgProductModel::ITEM_VIP:
                     $this->handleVipRedeem($redeem);
                     break;
-                case KgSaleModel::ITEM_EXAM_PAPER:
+                case KgProductModel::ITEM_EXAM_PAPER:
                     $this->handleExamPaperRedeem($redeem);
                     break;
-                case KgSaleModel::ITEM_ARTICLE:
+                case KgProductModel::ITEM_ARTICLE:
                     $this->handleArticleRedeem($redeem);
                     break;
-                case KgSaleModel::ITEM_GOODS:
+                case KgProductModel::ITEM_GOODS:
                     $this->handleGoodsRedeem($redeem);
                     break;
             }

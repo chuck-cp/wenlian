@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -8,7 +8,7 @@
 namespace App\Builders;
 
 use App\Models\Course as CourseModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 
 class OrderList extends Builder
@@ -59,19 +59,19 @@ class OrderList extends Builder
         $itemInfo = [];
 
         switch ($order['item_type']) {
-            case KgSaleModel::ITEM_COURSE:
+            case KgProductModel::ITEM_COURSE:
                 $itemInfo = $this->handleCourseInfo($order['item_info']);
                 break;
-            case KgSaleModel::ITEM_PACKAGE:
+            case KgProductModel::ITEM_PACKAGE:
                 $itemInfo = $this->handlePackageInfo($order['item_info']);
                 break;
-            case KgSaleModel::ITEM_VIP:
+            case KgProductModel::ITEM_VIP:
                 $itemInfo = $this->handleVipInfo($order['item_info']);
                 break;
-            case KgSaleModel::ITEM_EXAM_PAPER:
+            case KgProductModel::ITEM_EXAM_PAPER:
                 $itemInfo = $this->handleExamPaperInfo($order['item_info']);
                 break;
-            case KgSaleModel::ITEM_ARTICLE:
+            case KgProductModel::ITEM_ARTICLE:
                 $itemInfo = $this->handleArticleInfo($order['item_info']);
                 break;
         }
@@ -95,7 +95,7 @@ class OrderList extends Builder
         $cancelStatusOk = $order['status'] == OrderModel::STATUS_PENDING ? 1 : 0;
         $refundStatusOk = $order['status'] == OrderModel::STATUS_FINISHED ? 1 : 0;
 
-        if ($order['item_type'] == KgSaleModel::ITEM_COURSE) {
+        if ($order['item_type'] == KgProductModel::ITEM_COURSE) {
 
             $course = $order['item_info']['course'];
 
@@ -104,7 +104,7 @@ class OrderList extends Builder
 
             $me['allow_refund'] = $courseModelOk && $refundStatusOk && $refundTimeOk ? 1 : 0;
 
-        } elseif ($order['item_type'] == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($order['item_type'] == KgProductModel::ITEM_PACKAGE) {
 
             $courses = $order['item_info']['courses'];
 

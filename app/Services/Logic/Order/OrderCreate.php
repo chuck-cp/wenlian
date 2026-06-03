@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -10,7 +10,7 @@ namespace App\Services\Logic\Order;
 use App\Models\Article as ArticleModel;
 use App\Models\Course as CourseModel;
 use App\Models\ExamPaper as ExamPaperModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Models\Package as PackageModel;
 use App\Models\User as UserModel;
@@ -94,7 +94,7 @@ class OrderCreate extends LogicService
 
         $order = null;
 
-        if ($itemType == KgSaleModel::ITEM_COURSE) {
+        if ($itemType == KgProductModel::ITEM_COURSE) {
 
             $course = $orderValidator->checkCourse($itemId);
 
@@ -114,7 +114,7 @@ class OrderCreate extends LogicService
 
             $order = $this->createCourseOrder($course, $user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($itemType == KgProductModel::ITEM_PACKAGE) {
 
             $package = $orderValidator->checkPackage($itemId);
 
@@ -134,7 +134,7 @@ class OrderCreate extends LogicService
 
             $order = $this->createPackageOrder($package, $user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_VIP) {
+        } elseif ($itemType == KgProductModel::ITEM_VIP) {
 
             $vip = $orderValidator->checkVip($itemId);
 
@@ -152,7 +152,7 @@ class OrderCreate extends LogicService
 
             $order = $this->createVipOrder($vip, $user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($itemType == KgProductModel::ITEM_EXAM_PAPER) {
 
             $paper = $orderValidator->checkExamPaper($itemId);
 
@@ -172,7 +172,7 @@ class OrderCreate extends LogicService
 
             $order = $this->createExamPaperOrder($paper, $user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($itemType == KgProductModel::ITEM_ARTICLE) {
 
             $article = $orderValidator->checkArticle($itemId);
 
@@ -216,7 +216,7 @@ class OrderCreate extends LogicService
 
         $order->owner_id = $user->id;
         $order->item_id = $course->id;
-        $order->item_type = KgSaleModel::ITEM_COURSE;
+        $order->item_type = KgProductModel::ITEM_COURSE;
         $order->item_info = $itemInfo;
         $order->client_type = $this->getClientType();
         $order->client_ip = $this->getClientIp();
@@ -249,7 +249,7 @@ class OrderCreate extends LogicService
 
         $order->owner_id = $user->id;
         $order->item_id = $package->id;
-        $order->item_type = KgSaleModel::ITEM_PACKAGE;
+        $order->item_type = KgProductModel::ITEM_PACKAGE;
         $order->item_info = $itemInfo;
         $order->client_type = $this->getClientType();
         $order->client_ip = $this->getClientIp();
@@ -274,7 +274,7 @@ class OrderCreate extends LogicService
 
         $order->owner_id = $user->id;
         $order->item_id = $vip->id;
-        $order->item_type = KgSaleModel::ITEM_VIP;
+        $order->item_type = KgProductModel::ITEM_VIP;
         $order->item_info = $itemInfo;
         $order->client_type = $this->getClientType();
         $order->client_ip = $this->getClientIp();
@@ -299,7 +299,7 @@ class OrderCreate extends LogicService
 
         $order->owner_id = $user->id;
         $order->item_id = $paper->id;
-        $order->item_type = KgSaleModel::ITEM_EXAM_PAPER;
+        $order->item_type = KgProductModel::ITEM_EXAM_PAPER;
         $order->item_info = $itemInfo;
         $order->client_type = $this->getClientType();
         $order->client_ip = $this->getClientIp();
@@ -324,7 +324,7 @@ class OrderCreate extends LogicService
 
         $order->owner_id = $user->id;
         $order->item_id = $article->id;
-        $order->item_type = KgSaleModel::ITEM_ARTICLE;
+        $order->item_type = KgProductModel::ITEM_ARTICLE;
         $order->item_info = $itemInfo;
         $order->client_type = $this->getClientType();
         $order->client_ip = $this->getClientIp();

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -181,10 +181,6 @@ class User extends Service
 
         if (isset($post['edu_role'])) {
             $data['edu_role'] = $validator->checkEduRole($post['edu_role']);
-            $data['edu_role_label'] = $validator->checkEduRoleLabel(
-                $post['edu_role_label'] ?? '',
-                $data['edu_role']
-            );
         }
 
         if (isset($post['admin_role'])) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -8,7 +8,7 @@
 namespace App\Services\Logic\Order;
 
 use App\Models\Course as CourseModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Models\User as UserModel;
 use App\Repos\Order as OrderRepo;
@@ -106,14 +106,14 @@ class OrderInfo extends LogicService
             /**
              * 只允许线上课程退款
              */
-            if ($order->item_type == KgSaleModel::ITEM_COURSE) {
+            if ($order->item_type == KgProductModel::ITEM_COURSE) {
                 $course = $order->item_info['course'];
                 $refundTimeOk = $course['refund_expiry_time'] > time();
                 $courseModelOk = $course['model'] != CourseModel::MODEL_OFFLINE;
                 if ($refundTimeOk && $courseModelOk) {
                     $result['allow_refund'] = 1;
                 }
-            } elseif ($order->item_type == KgSaleModel::ITEM_PACKAGE) {
+            } elseif ($order->item_type == KgProductModel::ITEM_PACKAGE) {
                 $courses = $order->item_info['courses'];
                 foreach ($courses as $course) {
                     $refundTimeOk = $course['refund_expiry_time'] > time();
@@ -135,22 +135,22 @@ class OrderInfo extends LogicService
         $result = [];
 
         switch ($order->item_type) {
-            case KgSaleModel::ITEM_COURSE:
+            case KgProductModel::ITEM_COURSE:
                 $result = $this->handleCourseInfo($itemInfo);
                 break;
-            case KgSaleModel::ITEM_PACKAGE:
+            case KgProductModel::ITEM_PACKAGE:
                 $result = $this->handlePackageInfo($itemInfo);
                 break;
-            case KgSaleModel::ITEM_VIP:
+            case KgProductModel::ITEM_VIP:
                 $result = $this->handleVipInfo($itemInfo);
                 break;
-            case KgSaleModel::ITEM_EXAM_PAPER:
+            case KgProductModel::ITEM_EXAM_PAPER:
                 $result = $this->handleExamPaperInfo($itemInfo);
                 break;
-            case KgSaleModel::ITEM_ARTICLE:
+            case KgProductModel::ITEM_ARTICLE:
                 $result = $this->handleArticleInfo($itemInfo);
                 break;
-            case KgSaleModel::ITEM_PAY_TEST:
+            case KgProductModel::ITEM_PAY_TEST:
                 $result = $this->handleTestInfo($itemInfo);
                 break;
         }

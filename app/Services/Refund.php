@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Services;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Models\Trade as TradeModel;
 use App\Repos\Course as CourseRepo;
@@ -29,22 +29,22 @@ class Refund extends Service
         ];
 
         switch ($order->item_type) {
-            case KgSaleModel::ITEM_COURSE:
+            case KgProductModel::ITEM_COURSE:
                 $result = $this->previewCourseRefund($order);
                 break;
-            case KgSaleModel::ITEM_PACKAGE:
+            case KgProductModel::ITEM_PACKAGE:
                 $result = $this->previewPackageRefund($order);
                 break;
-            case KgSaleModel::ITEM_VIP:
+            case KgProductModel::ITEM_VIP:
                 $result = $this->previewVipRefund($order);
                 break;
-            case KgSaleModel::ITEM_EXAM_PAPER:
+            case KgProductModel::ITEM_EXAM_PAPER:
                 $result = $this->previewExamPaperRefund($order);
                 break;
-            case KgSaleModel::ITEM_ARTICLE:
+            case KgProductModel::ITEM_ARTICLE:
                 $result = $this->previewArticleRefund($order);
                 break;
-            case KgSaleModel::ITEM_PAY_TEST:
+            case KgProductModel::ITEM_PAY_TEST:
                 $result = $this->previewTestRefund($order);
                 break;
         }

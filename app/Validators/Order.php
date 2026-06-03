@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -8,7 +8,7 @@
 namespace App\Validators;
 
 use App\Exceptions\BadRequest as BadRequestException;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Models\Refund as RefundModel;
 use App\Models\Trade as TradeModel;
@@ -132,9 +132,9 @@ class Order extends Validator
         }
 
         $types = [
-            KgSaleModel::ITEM_COURSE,
-            KgSaleModel::ITEM_PACKAGE,
-            KgSaleModel::ITEM_EXAM_PAPER,
+            KgProductModel::ITEM_COURSE,
+            KgProductModel::ITEM_PACKAGE,
+            KgProductModel::ITEM_EXAM_PAPER,
         ];
 
         if (!in_array($order->item_type, $types)) {
@@ -165,7 +165,7 @@ class Order extends Validator
     {
         $orderRepo = new OrderRepo();
 
-        $itemType = KgSaleModel::ITEM_COURSE;
+        $itemType = KgProductModel::ITEM_COURSE;
 
         $order = $orderRepo->findUserLastDeliveringOrder($userId, $courseId, $itemType);
 
@@ -184,7 +184,7 @@ class Order extends Validator
     {
         $orderRepo = new OrderRepo();
 
-        $itemType = KgSaleModel::ITEM_PACKAGE;
+        $itemType = KgProductModel::ITEM_PACKAGE;
 
         $order = $orderRepo->findUserLastDeliveringOrder($userId, $packageId, $itemType);
 
@@ -203,7 +203,7 @@ class Order extends Validator
     {
         $orderRepo = new OrderRepo();
 
-        $itemType = KgSaleModel::ITEM_EXAM_PAPER;
+        $itemType = KgProductModel::ITEM_EXAM_PAPER;
 
         $order = $orderRepo->findUserLastDeliveringOrder($userId, $paperId, $itemType);
 
@@ -222,7 +222,7 @@ class Order extends Validator
     {
         $orderRepo = new OrderRepo();
 
-        $itemType = KgSaleModel::ITEM_ARTICLE;
+        $itemType = KgProductModel::ITEM_ARTICLE;
 
         $order = $orderRepo->findUserLastDeliveringOrder($userId, $articleId, $itemType);
 

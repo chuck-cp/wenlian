@@ -34,16 +34,6 @@
                 </div>
                 <div id="player"></div>
             </div>
-            <div id="comment-anchor"></div>
-            {% if chapter.settings.comment_enabled == 1 %}
-                <div class="vod-comment wrap">
-                    {{ partial('chapter/comment') }}
-                </div>
-            {% else %}
-                <div class="wrap center gray">
-                    <i class="layui-icon layui-icon-tips"></i> 评论已关闭
-                </div>
-            {% endif %}
         </div>
         <div class="layout-sidebar">
             {{ partial('chapter/catalog') }}
@@ -51,7 +41,7 @@
     </div>
 
     <div class="layout-sticky">
-        {{ partial('chapter/sticky') }}
+        {{ partial('chapter/sticky', ['show_comment': false]) }}
     </div>
 
     <div class="layui-hide">
@@ -81,7 +71,6 @@
     {{ js_include('home/js/chapter.vod.player.js') }}
     {{ js_include('home/js/course.share.js') }}
     {{ js_include('home/js/chapter.show.js') }}
-    {{ js_include('home/js/comment.js') }}
     {{ js_include('home/js/copy.js') }}
 
 {% endblock %}

@@ -1,30 +1,8 @@
-layui.use(['jquery', 'layer', 'rate', 'helper'], function () {
+layui.use(['jquery', 'layer', 'helper'], function () {
 
     var $ = layui.jquery;
     var layer = layui.layer;
-    var rate = layui.rate;
     var helper = layui.helper;
-
-    rate.render({
-        elem: '#rating1',
-        value: $('#rating1').data('value'),
-        readonly: true,
-        half: true,
-    });
-
-    rate.render({
-        elem: '#rating2',
-        value: $('#rating2').data('value'),
-        readonly: true,
-        half: true,
-    });
-
-    rate.render({
-        elem: '#rating3',
-        value: $('#rating3').data('value'),
-        readonly: true,
-        half: true,
-    });
 
     /**
      * 收藏

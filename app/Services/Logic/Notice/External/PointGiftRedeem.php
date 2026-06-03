@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2023 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2023 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Services\Logic\Notice\External;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\PointGiftRedeem as PointGiftRedeemModel;
 use App\Models\Task as TaskModel;
 use App\Repos\Account as AccountRepo;
@@ -67,7 +67,7 @@ class PointGiftRedeem extends LogicService
 
         if (!$weworkNoticeEnabled && !$dingtalkNoticeEnabled) return;
 
-        if ($redeem->gift_type != KgSaleModel::ITEM_GOODS) return;
+        if ($redeem->gift_type != KgProductModel::ITEM_GOODS) return;
 
         $task = new TaskModel();
 

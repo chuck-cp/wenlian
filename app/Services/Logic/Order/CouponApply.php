@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Services\Logic\Order;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Services\Logic\Service as LogicService;
 use App\Validators\Coupon as CouponValidator;
 use App\Validators\CouponUser as CouponUserValidator;
@@ -44,7 +44,7 @@ class CouponApply extends LogicService
 
         $calculator = null;
 
-        if ($itemType == KgSaleModel::ITEM_COURSE) {
+        if ($itemType == KgProductModel::ITEM_COURSE) {
 
             $course = $orderValidator->checkCourse($itemId);
 
@@ -52,7 +52,7 @@ class CouponApply extends LogicService
 
             $calculator->handleCouponPay($coupon, $user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($itemType == KgProductModel::ITEM_PACKAGE) {
 
             $package = $orderValidator->checkPackage($itemId);
 
@@ -60,7 +60,7 @@ class CouponApply extends LogicService
 
             $calculator->handleCouponPay($coupon, $user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_VIP) {
+        } elseif ($itemType == KgProductModel::ITEM_VIP) {
 
             $vip = $orderValidator->checkVip($itemId);
 
@@ -68,7 +68,7 @@ class CouponApply extends LogicService
 
             $calculator->handleCouponPay($coupon, $user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($itemType == KgProductModel::ITEM_EXAM_PAPER) {
 
             $paper = $orderValidator->checkExamPaper($itemId);
 
@@ -76,7 +76,7 @@ class CouponApply extends LogicService
 
             $calculator->handleCouponPay($coupon, $user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($itemType == KgProductModel::ITEM_ARTICLE) {
 
             $article = $orderValidator->checkArticle($itemId);
 

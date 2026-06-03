@@ -11,8 +11,10 @@
 {%- endmacro %}
 
 {%- macro edu_role_info(role) %}
-    {% if role.id > 0 %}
-        {{ role.name }}
+    {% if role.id == 1 %}
+        学员
+    {% elseif role.id == 2 %}
+        讲师
     {% else %}
         N/A
     {% endif %}

@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Services\Logic\Distribution;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Services\Logic\Service;
 use App\Services\Logic\Url\ShareUrl as ShareUrlService;
 use Endroid\QrCode\QrCode;
@@ -79,19 +79,19 @@ class Poster extends Service
         $cover = kg_cos_img_url($item['cover']);
 
         switch ($item['type']) {
-            case KgSaleModel::ITEM_COURSE:
+            case KgProductModel::ITEM_COURSE:
                 $title = sprintf('课程：%s', $item['title']);
                 break;
-            case KgSaleModel::ITEM_PACKAGE:
+            case KgProductModel::ITEM_PACKAGE:
                 $title = sprintf('套餐：%s', $item['title']);
                 break;
-            case KgSaleModel::ITEM_VIP:
+            case KgProductModel::ITEM_VIP:
                 $title = sprintf('会员：%s', $item['title']);
                 break;
-            case KgSaleModel::ITEM_EXAM_PAPER:
+            case KgProductModel::ITEM_EXAM_PAPER:
                 $title = sprintf('试卷：%s', $item['title']);
                 break;
-            case KgSaleModel::ITEM_ARTICLE:
+            case KgProductModel::ITEM_ARTICLE:
                 $title = sprintf('专栏：%s', $item['title']);
                 break;
         }
@@ -108,19 +108,19 @@ class Poster extends Service
         $url = $service->handle('home', 0, $referer);
 
         switch ($item['type']) {
-            case KgSaleModel::ITEM_COURSE:
+            case KgProductModel::ITEM_COURSE:
                 $url = $service->handle('course', $item['id'], $referer);
                 break;
-            case KgSaleModel::ITEM_PACKAGE:
+            case KgProductModel::ITEM_PACKAGE:
                 $url = $service->handle('package', $item['id'], $referer);
                 break;
-            case KgSaleModel::ITEM_VIP:
+            case KgProductModel::ITEM_VIP:
                 $url = $service->handle('vip', $item['id'], $referer);
                 break;
-            case KgSaleModel::ITEM_EXAM_PAPER:
+            case KgProductModel::ITEM_EXAM_PAPER:
                 $url = $service->handle('exam_paper', $item['id'], $referer);
                 break;
-            case KgSaleModel::ITEM_ARTICLE:
+            case KgProductModel::ITEM_ARTICLE:
                 $url = $service->handle('article', $item['id'], $referer);
                 break;
         }
@@ -130,9 +130,7 @@ class Poster extends Service
 
     protected function getQrImage($url, $size = 120, $margin = 10)
     {
-        $text = urldecode($url);
-
-        $qrCode = new QrCode($text);
+        $qrCode = new QrCode($url);
 
         $qrCode->setSize($size);
         $qrCode->setMargin($margin);

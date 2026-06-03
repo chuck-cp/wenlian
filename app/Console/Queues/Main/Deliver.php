@@ -1,18 +1,17 @@
 <?php
 /**
- * @copyright Copyright (c) 2023 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2023 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
 
 namespace App\Console\Queues\Main;
 
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Models\Refund as RefundModel;
 use App\Models\Task as TaskModel;
 use App\Models\Trade as TradeModel;
-use App\Models\UserBalance as UserBalanceModel;
 use App\Repos\Article as ArticleRepo;
 use App\Repos\Course as CourseRepo;
 use App\Repos\ExamPaper as ExamPaperRepo;
@@ -53,22 +52,22 @@ class Deliver extends Injectable
             $this->db->begin();
 
             switch ($order->item_type) {
-                case KgSaleModel::ITEM_COURSE:
+                case KgProductModel::ITEM_COURSE:
                     $this->handleCourseOrder($order);
                     break;
-                case KgSaleModel::ITEM_PACKAGE:
+                case KgProductModel::ITEM_PACKAGE:
                     $this->handlePackageOrder($order);
                     break;
-                case KgSaleModel::ITEM_VIP:
+                case KgProductModel::ITEM_VIP:
                     $this->handleVipOrder($order);
                     break;
-                case KgSaleModel::ITEM_EXAM_PAPER:
+                case KgProductModel::ITEM_EXAM_PAPER:
                     $this->handleExamPaperOrder($order);
                     break;
-                case KgSaleModel::ITEM_ARTICLE:
+                case KgProductModel::ITEM_ARTICLE:
                     $this->handleArticleOrder($order);
                     break;
-                case KgSaleModel::ITEM_PAY_ACCOUNT_VERIFY:
+                case KgProductModel::ITEM_PAY_ACCOUNT_VERIFY:
                     $this->handlePayAccountVerifyOrder($order);
                     break;
             }
@@ -122,11 +121,11 @@ class Deliver extends Injectable
     protected function isAffiliateOrder(OrderModel $order)
     {
         $scopes = [
-            KgSaleModel::ITEM_COURSE,
-            KgSaleModel::ITEM_PACKAGE,
-            KgSaleModel::ITEM_VIP,
-            KgSaleModel::ITEM_EXAM_PAPER,
-            KgSaleModel::ITEM_ARTICLE,
+            KgProductModel::ITEM_COURSE,
+            KgProductModel::ITEM_PACKAGE,
+            KgProductModel::ITEM_VIP,
+            KgProductModel::ITEM_EXAM_PAPER,
+            KgProductModel::ITEM_ARTICLE,
         ];
 
         return in_array($order->item_type, $scopes);
@@ -141,11 +140,11 @@ class Deliver extends Injectable
     protected function isNormalOrder(OrderModel $order)
     {
         $scopes = [
-            KgSaleModel::ITEM_COURSE,
-            KgSaleModel::ITEM_PACKAGE,
-            KgSaleModel::ITEM_VIP,
-            KgSaleModel::ITEM_EXAM_PAPER,
-            KgSaleModel::ITEM_ARTICLE,
+            KgProductModel::ITEM_COURSE,
+            KgProductModel::ITEM_PACKAGE,
+            KgProductModel::ITEM_VIP,
+            KgProductModel::ITEM_EXAM_PAPER,
+            KgProductModel::ITEM_ARTICLE,
         ];
 
         return in_array($order->item_type, $scopes);
@@ -250,10 +249,10 @@ class Deliver extends Injectable
         if ($orders->count() == 0) return;
 
         $itemTypes = [
-            KgSaleModel::ITEM_COURSE,
-            KgSaleModel::ITEM_PACKAGE,
-            KgSaleModel::ITEM_EXAM_PAPER,
-            KgSaleModel::ITEM_ARTICLE,
+            KgProductModel::ITEM_COURSE,
+            KgProductModel::ITEM_PACKAGE,
+            KgProductModel::ITEM_EXAM_PAPER,
+            KgProductModel::ITEM_ARTICLE,
         ];
 
         foreach ($orders as $order) {

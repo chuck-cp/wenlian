@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -75,7 +75,6 @@ $error['user.invalid_gender'] = '无效的性别类型';
 $error['user.invalid_area'] = '无效的省市地区';
 $error['user.invalid_avatar'] = '无效的头像';
 $error['user.invalid_edu_role'] = '无效的教学角色';
-$error['user.invalid_edu_role_label'] = '自定义教学角色名称不能超过4个字';
 $error['user.invalid_admin_role'] = '无效的后台角色';
 $error['user.invalid_vip_status'] = '无效的会员状态';
 $error['user.invalid_vip_expiry_time'] = '无效的会员期限';
@@ -220,21 +219,6 @@ $error['topic.title_too_short'] = '标题太短（少于2个字符）';
 $error['topic.title_too_long'] = '标题太长（多于50个字符）';
 $error['topic.summary_too_long'] = '简介太长（多于255个字符）';
 $error['topic.invalid_publish_status'] = '无效的发布状态';
-
-/**
- * 证书相关
- */
-$error['certificate.not_found'] = '证书不存在';
-$error['certificate.name_too_short'] = '证书名称太短（少于2个字符）';
-$error['certificate.name_too_long'] = '证书名称太长（多于30个字符）';
-$error['certificate.invalid_item_type'] = '无效的证书类型';
-$error['certificate.invalid_grant_type'] = '无效的授予方式';
-$error['certificate.invalid_publish_status'] = '无效的发布状态';
-$error['certificate.item_not_bound'] = '所选专题 / 课程 / 考试未配置证书';
-$error['certificate.manual_grant_not_allowed'] = '当前证书不支持手动发放';
-
-$error['cert_user.not_found'] = '证书授予记录不存在';
-$error['cert_user.already_granted'] = '该用户已授予所选证书';
 
 /**
  * 套餐相关

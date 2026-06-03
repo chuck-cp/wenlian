@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2022 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2022 深圳市酷瓜软件有限公司
  * @license https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link https://www.koogua.com
  */
@@ -81,9 +81,7 @@ class Poster extends Service
 
     protected function getQrImage($url, $size = 120, $margin = 10)
     {
-        $text = urldecode($url);
-
-        $qrCode = new QrCode($text);
+        $qrCode = new QrCode($url);
 
         $qrCode->setSize($size);
         $qrCode->setMargin($margin);

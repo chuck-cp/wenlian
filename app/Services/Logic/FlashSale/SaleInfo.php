@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -8,7 +8,7 @@
 namespace App\Services\Logic\FlashSale;
 
 use App\Models\FlashSale as FlashSaleModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\User as UserModel;
 use App\Services\Logic\ArticleTrait;
 use App\Services\Logic\CourseTrait;
@@ -59,31 +59,31 @@ class SaleInfo extends LogicService
     {
         $details = '';
 
-        if ($sale->item_type == KgSaleModel::ITEM_COURSE) {
+        if ($sale->item_type == KgProductModel::ITEM_COURSE) {
 
             $course = $this->checkCourse($sale->item_id);
 
             $details = $course->details;
 
-        } elseif ($sale->item_type == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($sale->item_type == KgProductModel::ITEM_PACKAGE) {
 
             $package = $this->checkPackage($sale->item_id);
 
             $details = $package->summary;
 
-        } elseif ($sale->item_type == KgSaleModel::ITEM_VIP) {
+        } elseif ($sale->item_type == KgProductModel::ITEM_VIP) {
 
             $vip = $this->checkVip($sale->item_id);
 
             $details = $vip->title;
 
-        } elseif ($sale->item_type == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($sale->item_type == KgProductModel::ITEM_EXAM_PAPER) {
 
             $paper = $this->checkExamPaper($sale->item_id);
 
             $details = $paper->title;
 
-        } elseif ($sale->item_type == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($sale->item_type == KgProductModel::ITEM_ARTICLE) {
 
             $article = $this->checkArticle($sale->item_id);
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -49,12 +49,10 @@ class UserList extends Builder
 
     public function handleEduRoles(array $users)
     {
+        $roles = $this->getEduRoles();
+
         foreach ($users as $key => $user) {
-            $eduRole = $user['edu_role'] ?? 0;
-            $users[$key]['edu_role'] = [
-                'id' => $eduRole,
-                'name' => UserModel::formatEduRoleName($eduRole, $user['edu_role_label'] ?? ''),
-            ];
+            $users[$key]['edu_role'] = $roles[$user['edu_role']] ?? ['id' => 0, 'name' => 'N/A'];
         }
 
         return $users;
@@ -95,6 +93,20 @@ class UserList extends Builder
         }
 
         return $result;
+    }
+
+    protected function getEduRoles()
+    {
+        return [
+            UserModel::EDU_ROLE_STUDENT => [
+                'id' => UserModel::EDU_ROLE_STUDENT,
+                'name' => '学员',
+            ],
+            UserModel::EDU_ROLE_TEACHER => [
+                'id' => UserModel::EDU_ROLE_TEACHER,
+                'name' => '讲师',
+            ],
+        ];
     }
 
 }

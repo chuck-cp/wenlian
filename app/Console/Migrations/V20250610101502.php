@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2025 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2025 深圳市酷瓜软件有限公司
  * @license https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @link https://www.koogua.com
  */
@@ -28,7 +28,7 @@ class V20250610101502 extends Migration
                 'item_key' => 'doc_wmk',
                 'item_value' => json_encode([
                     'enabled' => 1,
-                    'text' => '文联云课堂',
+                    'text' => '酷瓜云课堂',
                     'size' => 20,
                     'color' => 'rgba(192,192,192,0.6)',
                     'rotate' => 320,

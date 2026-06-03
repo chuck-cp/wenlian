@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2024 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2024 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -35,29 +35,49 @@ class CloseLiveTask extends Task
         echo '------ start close live task ------' . PHP_EOL;
 
         foreach ($chapterLives as $chapterLive) {
-
-            $chapterLive->status = ChapterLiveModel::STATUS_INACTIVE;
-
-            $chapterLive->update();
-
-            $chapterRepo = new ChapterRepo();
-
-            $chapter = $chapterRepo->findById($chapterLive->chapter_id);
-
-            $attrs = $chapter->attrs;
-            $attrs['stream']['status'] = ChapterModel::STREAM_STATUS_INACTIVE;
-            $chapter->attrs = $attrs;
-
-            $chapter->update();
-
-            $cache = new CourseChapterListCache();
-
-            $cache->rebuild($chapterLive->course_id);
+            $this->closeChapterLive($chapterLive);
         }
 
         echo '------ end close live task ------' . PHP_EOL;
 
         LockUtil::releaseLock($taskLockKey, $taskLockId);
+    }
+
+    protected function closeChapterLive(ChapterLiveModel $chapterLive)
+    {
+        try {
+
+            $this->db->begin();
+
+            $chapterLive->status = ChapterLiveModel::STATUS_INACTIVE;
+            $chapterLive->update();
+
+            $chapterRepo = new ChapterRepo();
+            $chapter = $chapterRepo->findById($chapterLive->chapter_id);
+
+            $attrs = $chapter->attrs;
+            $attrs['stream']['status'] = ChapterModel::STREAM_STATUS_INACTIVE;
+            $chapter->attrs = $attrs;
+            $chapter->update();
+
+            $this->db->commit();
+
+            $cache = new CourseChapterListCache();
+            $cache->rebuild($chapterLive->course_id);
+
+        } catch (\Exception $e) {
+
+            $this->db->rollback();
+
+            $logger = $this->getLogger('live');
+
+            $logger->error('Close Live Task Exception: ' . kg_json_encode([
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'message' => $e->getMessage(),
+                    'live' => $chapterLive,
+                ]));
+        }
     }
 
     /**
@@ -66,7 +86,7 @@ class CloseLiveTask extends Task
      * @param int $limit
      * @return ResultsetInterface|Resultset|ChapterLiveModel[]
      */
-    protected function findChapterLives(int $limit = 100)
+    protected function findChapterLives($limit = 100)
     {
         $status = ChapterLiveModel::STATUS_ACTIVE;
         $endTime = time() - 3600;

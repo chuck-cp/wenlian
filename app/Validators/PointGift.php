@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -9,7 +9,7 @@ namespace App\Validators;
 
 use App\Exceptions\BadRequest as BadRequestException;
 use App\Library\Validators\Common as CommonValidator;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\PointGift as PointGiftModel;
 use App\Repos\PointGift as PointGiftRepo;
 use App\Services\EditorStorage as EditorStorageService;
@@ -79,7 +79,7 @@ class PointGift extends Validator
     {
         $result = $gift->attrs;
 
-        if ($gift->type == KgSaleModel::ITEM_GOODS) {
+        if ($gift->type == KgProductModel::ITEM_GOODS) {
             $result['url'] = $attrs['url'];
         }
 

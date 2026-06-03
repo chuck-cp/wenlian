@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -42,30 +42,33 @@ class TeamDeliver extends LogicService
 
             $teamUsers = $teamRepo->findFinishedTeamUsers($team->id);
 
-            if ($teamUsers->count() == 0) return;
+            if ($teamUsers->count() > 0) {
 
-            $orderIds = kg_array_column($teamUsers->toArray(), 'order_id');
+                $orderIds = kg_array_column($teamUsers->toArray(), 'order_id');
 
-            $orderRepo = new OrderRepo();
+                $orderRepo = new OrderRepo();
 
-            $orders = $orderRepo->findByIds($orderIds);
+                $orders = $orderRepo->findByIds($orderIds);
 
-            if ($orders->count() == 0) return;
+                if ($orders->count() > 0) {
 
-            foreach ($orders as $order) {
+                    foreach ($orders as $order) {
 
-                if ($order->status != OrderModel::STATUS_DELIVERING) continue;
+                        if ($order->status != OrderModel::STATUS_DELIVERING) continue;
 
-                $itemInfo = [
-                    'order' => ['id' => $order->id],
-                ];
+                        $itemInfo = [
+                            'order' => ['id' => $order->id],
+                        ];
 
-                $task = new TaskModel();
+                        $task = new TaskModel();
 
-                $task->item_id = $order->id;
-                $task->item_info = $itemInfo;
-                $task->item_type = TaskModel::TYPE_DELIVER;
-                $task->create();
+                        $task->item_id = $order->id;
+                        $task->item_info = $itemInfo;
+                        $task->item_type = TaskModel::TYPE_DELIVER;
+
+                        $task->create();
+                    }
+                }
             }
 
             $this->db->commit();
@@ -80,6 +83,7 @@ class TeamDeliver extends LogicService
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                     'message' => $e->getMessage(),
+                    'team' => $team,
                 ]));
 
             throw new \RuntimeException('sys.trans_rollback');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -10,7 +10,7 @@ namespace App\Services\Logic\Order;
 use App\Models\Article as ArticleModel;
 use App\Models\Course as CourseModel;
 use App\Models\ExamPaper as ExamPaperModel;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Package as PackageModel;
 use App\Models\Vip as VipModel;
 use App\Repos\Package as PackageRepo;
@@ -46,7 +46,7 @@ class OrderConfirm extends LogicService
 
         $calculator = null;
 
-        if ($itemType == KgSaleModel::ITEM_COURSE) {
+        if ($itemType == KgProductModel::ITEM_COURSE) {
 
             $course = $validator->checkCourse($itemId);
 
@@ -56,7 +56,7 @@ class OrderConfirm extends LogicService
 
             $calculator->handleNormalPay($user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_PACKAGE) {
+        } elseif ($itemType == KgProductModel::ITEM_PACKAGE) {
 
             $package = $validator->checkPackage($itemId);
 
@@ -66,7 +66,7 @@ class OrderConfirm extends LogicService
 
             $calculator->handleNormalPay($user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_VIP) {
+        } elseif ($itemType == KgProductModel::ITEM_VIP) {
 
             $vip = $validator->checkVip($itemId);
 
@@ -76,7 +76,7 @@ class OrderConfirm extends LogicService
 
             $calculator->handleNormalPay($user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_EXAM_PAPER) {
+        } elseif ($itemType == KgProductModel::ITEM_EXAM_PAPER) {
 
             $examPaper = $validator->checkExamPaper($itemId);
 
@@ -86,7 +86,7 @@ class OrderConfirm extends LogicService
 
             $calculator->handleNormalPay($user);
 
-        } elseif ($itemType == KgSaleModel::ITEM_ARTICLE) {
+        } elseif ($itemType == KgProductModel::ITEM_ARTICLE) {
 
             $article = $validator->checkArticle($itemId);
 

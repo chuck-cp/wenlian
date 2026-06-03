@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -36,19 +36,29 @@ class SyncLearningTask extends Task
 
         $syncKey = $sync->getSyncKey();
 
-        $requestIds = $redis->sMembers($syncKey);
+        $requestIds = $redis->sRandMember($syncKey,300);
 
-        if (!$requestIds) return;
+        echo sprintf('pending requests: %s', count($requestIds)) . PHP_EOL;
+
+        if (empty($requestIds)) return;
 
         echo '------ start sync learning task ------' . PHP_EOL;
 
         foreach ($requestIds as $requestId) {
-
-            $itemKey = $sync->getItemKey($requestId);
-
-            $this->handleLearning($itemKey);
-
-            $redis->sRem($syncKey, $requestId);
+            try {
+                $itemKey = $sync->getItemKey($requestId);
+                $this->handleLearning($itemKey);
+            } catch (\Exception $e) {
+                $logger = $this->getLogger('sync');
+                $logger->error('Sync Learning Exception: ' . kg_json_encode([
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'message' => $e->getMessage(),
+                        'request_id' => $requestId,
+                    ]));
+            } finally {
+                $redis->sRem($syncKey, $requestId);
+            }
         }
 
         echo '------ end sync learning task ------' . PHP_EOL;

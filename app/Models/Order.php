@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -213,13 +213,13 @@ class Order extends Model
     public static function itemTypes()
     {
         return [
-            KgSale::ITEM_COURSE => '课程',
-            KgSale::ITEM_PACKAGE => '套餐',
-            KgSale::ITEM_EXAM_PAPER => '试卷',
-            KgSale::ITEM_ARTICLE => '专栏',
-            KgSale::ITEM_VIP => '会员',
-            KgSale::ITEM_PAY_ACCOUNT_VERIFY => '账户验证',
-            KgSale::ITEM_PAY_TEST => '支付测试',
+            KgProduct::ITEM_COURSE => '课程',
+            KgProduct::ITEM_PACKAGE => '套餐',
+            KgProduct::ITEM_EXAM_PAPER => '试卷',
+            KgProduct::ITEM_ARTICLE => '专栏',
+            KgProduct::ITEM_VIP => '会员',
+            KgProduct::ITEM_PAY_ACCOUNT_VERIFY => '账户验证',
+            KgProduct::ITEM_PAY_TEST => '支付测试',
         ];
     }
 

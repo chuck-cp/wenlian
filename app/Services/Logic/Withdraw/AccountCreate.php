@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -8,7 +8,7 @@
 namespace App\Services\Logic\Withdraw;
 
 use App\Exceptions\BadRequest as BadRequestException;
-use App\Models\KgSale as KgSaleModel;
+use App\Models\KgProduct as KgProductModel;
 use App\Models\Order as OrderModel;
 use App\Models\User as UserModel;
 use App\Models\WithdrawAccount as WithdrawAccountModel;
@@ -100,7 +100,7 @@ class AccountCreate extends LogicService
 
     protected function createOrder(UserModel $user, WithdrawAccountModel $account)
     {
-        $itemType = KgSaleModel::ITEM_PAY_ACCOUNT_VERIFY;
+        $itemType = KgProductModel::ITEM_PAY_ACCOUNT_VERIFY;
 
         $orderRepo = new OrderRepo();
 

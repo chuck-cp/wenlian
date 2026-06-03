@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2021 深圳市文联软件有限公司
+ * @copyright Copyright (c) 2021 深圳市酷瓜软件有限公司
  * @license https://opensource.org/licenses/GPL-2.0
  * @link https://www.koogua.com
  */
@@ -35,8 +35,6 @@ class ProfileInfo extends LogicService
             'vip' => $user->vip,
             'locked' => $user->locked,
             'edu_role' => $user->edu_role,
-            'edu_role_label' => $user->edu_role_label,
-            'edu_role_name' => UserModel::formatEduRoleName($user->edu_role, $user->edu_role_label),
             'admin_role' => $user->admin_role,
             'vip_expiry_time' => $user->vip_expiry_time,
             'lock_expiry_time' => $user->lock_expiry_time,
