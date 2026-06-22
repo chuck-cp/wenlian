@@ -17,6 +17,7 @@ use App\Caches\IndexSimpleNewCourseList;
 use App\Caches\IndexSimpleVipCourseList;
 use App\Caches\IndexSlideList;
 use App\Caches\IndexTeacherList;
+use App\Http\Home\Services\Index as IndexService;
 
 /**
  * @RoutePrefix("/api/index")
@@ -34,6 +35,20 @@ class IndexController extends Controller
         $slides = $cache->get();
 
         return $this->jsonSuccess(['slides' => $slides]);
+    }
+
+    /**
+     * 首页专题列表：返回已发布专题及其已上架课程。
+     *
+     * @Get("/topics", name="api.index.topics")
+     */
+    public function topicsAction()
+    {
+        $service = new IndexService();
+
+        $topics = $service->getIndexTopicSections(20, 8, true, false);
+
+        return $this->jsonSuccess(['topics' => $topics]);
     }
 
     /**

@@ -32,4 +32,11 @@ foreach ($modules as $module) {
     }
 }
 
+$router->addGet('/api/index/topics', [
+    'module' => 'api',
+    'namespace' => 'App\Http\Api\Controllers',
+    'controller' => 'index',
+    'action' => 'topics',
+]);
+
 return $router;

@@ -124,16 +124,25 @@ class Topic extends Repository
     }
 
     /**
-     * 首页：未删除的专题（与后台列表一致；是否发布仅影响详情页时由控制器处理）
+     * 首页专题列表：按需限制只取已发布专题。
      *
      * @param int $limit
+     * @param bool $publishedOnly
      * @return ResultsetInterface|Resultset|TopicModel[]
      */
-    public function findTopicsForHomeIndex($limit = 20)
+    public function findTopicsForHomeIndex($limit = 20, $publishedOnly = false)
     {
+        $conditions = 'deleted = :deleted:';
+        $bind = ['deleted' => 0];
+
+        if ($publishedOnly) {
+            $conditions .= ' AND published = :published:';
+            $bind['published'] = 1;
+        }
+
         return TopicModel::find([
-            'conditions' => 'deleted = :deleted:',
-            'bind' => ['deleted' => 0],
+            'conditions' => $conditions,
+            'bind' => $bind,
             'order' => 'id DESC',
             'limit' => (int)$limit,
         ]);

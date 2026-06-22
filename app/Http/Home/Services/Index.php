@@ -143,15 +143,19 @@ class Index extends Service
     }
 
     /**
-     * 首页专题块：每块为专题标题 + 最多 8 门已上架关联课程（无已上架关联课程则不展示该块）
+     * 首页专题块：每块为专题标题 + 最多 8 门已上架关联课程（无已上架关联课程则不展示该块）。
      *
-     * @return array<int, array{id:int,title:string,url:string,courses:array}>
+     * @param int $maxTopics
+     * @param int $coursesPerTopic
+     * @param bool $publishedOnly
+     * @param bool $withUrl
+     * @return array<int, array{id:int,title:string,url?:string,courses:array}>
      */
-    public function getIndexTopicSections($maxTopics = 20, $coursesPerTopic = 8)
+    public function getIndexTopicSections($maxTopics = 20, $coursesPerTopic = 8, $publishedOnly = false, $withUrl = true)
     {
         $topicRepo = new TopicRepo();
 
-        $topics = $topicRepo->findTopicsForHomeIndex($maxTopics);
+        $topics = $topicRepo->findTopicsForHomeIndex($maxTopics, $publishedOnly);
 
         $sections = [];
 
@@ -198,15 +202,20 @@ class Index extends Service
                 continue;
             }
 
-            $sections[] = [
+            $section = [
                 'id' => $topic->id,
                 'title' => $topic->title,
-                'url' => $this->url->get([
-                    'for' => 'home.topic.show',
-                    'id' => $topic->id,
-                ]),
                 'courses' => $courses,
             ];
+
+            if ($withUrl) {
+                $section['url'] = $this->url->get([
+                    'for' => 'home.topic.show',
+                    'id' => $topic->id,
+                ]);
+            }
+
+            $sections[] = $section;
         }
 
         return $sections;
